@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda de Josué & Adriana - Confirmación de Asistencia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3d59;
+            --accent: #438a5e;
+            --bg: #f4f8fb;
+            --card-bg: #ffffff;
+            --text: #2f3e46;
+            --border: #d0e1fd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(#d6e4fd 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(30, 61, 89, 0.08);
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3d59, #4392f1, #17b978);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #4392f1;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #fafbfc;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #4392f1;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(67, 146, 241, 0.1);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s, transform 0.1s;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(30, 61, 89, 0.2);
+        }
+
+        button:hover {
+            background-color: #172b3c;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .alert-error {
+            background-color: #fdf2f2;
+            color: #c53030;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background-color: #f0fff4;
+            color: #276749;
+            border: 1px solid #c6f6d5;
+        }
+
+        .alert-warning {
+            background-color: #fffaf0;
+            color: #9c4221;
+            border: 1px solid #feebc8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        #guestCard {
+            background: #f4f8fb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: left;
+            border-left: 4px solid #4392f1;
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #guestCard p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--primary);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #d0e1fd;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Josué & Adriana</h1>
+        <div class="subtitle">Nuestra Boda • RSVP</div>
+
+        <!-- PASO 1: Ingresar Código -->
+        <div id="step-code">
+            <p>Por favor, introduce el código personal que aparece en tu invitación para confirmar tu asistencia.</p>
+            <div id="error-msg" class="alert alert-error hidden"></div>
+            <div class="form-group">
+                <label for="codigoInput">Código de Invitación</label>
+                <input type="text" id="codigoInput" placeholder="Ej. PEREZSOSAFAMILIA">
+            </div>
+            <button onclick="validarCodigo()">Ver Invitación</button>
+        </div>
+
+        <!-- PASO 2: Confirmar Asistencia -->
+        <div id="step-rsvp" class="hidden">
+            <div id="guestCard">
+                <p><strong>Familia:</strong> <span id="nombreFamilia"></span></p>
+                <p><strong>Invitados asignados:</strong> <span id="textoPases" class="badge"></span></p>
+            </div>
+
+            <div id="success-msg" class="alert alert-success hidden">¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.</div>
+            
+            <div class="form-group">
+                <label for="asistenciaSelect">Confirmar Asistencia</label>
+                <select id="asistenciaSelect" onchange="toggleAsistencia()">
+                    <option value="si">Sí, ahí estaremos con alegría</option>
+                    <option value="no">No podremos asistir</option>
+                </select>
+            </div>
+
+            <!-- SECCIÓN SI ASISTEN -->
+            <div id="group-si" class="form-group">
+                <label for="asistentesConfirmados">Personas que asistirán</label>
+                <select id="asistentesConfirmados">
+                    <!-- Se llena dinámicamente -->
+                </select>
+            </div>
+
+            <!-- SECCIÓN SI NO ASISTEN -->
+            <div id="group-no" class="hidden">
+                <div class="alert alert-warning">
+                    <p style="margin-bottom: 10px;"><strong>¡Qué pena que no nos puedan acompañar!</strong> Les mandamos un abrazo gigante y lamentamos mucho que no estén con nosotros en este día tan especial.</p>
+                    <hr style="border: none; border-top: 1px solid #feebc8; margin: 10px 0;">
+                    <p style="margin-bottom: 0; font-size: 0.9rem;">⚠️ <strong>Nota importante sobre el presupuesto:</strong> Te recordamos que tu respuesta es tomada estrictamente en cuenta para el presupuesto de la boda y el contrato del banquete. Por lo tanto, al marcar "No", tu asistencia no será considerada en el evento, lo que significa que <strong>si no van, no hay comida ni lugar reservado</strong> para ustedes de última hora. ¡Agradecemos mucho tu comprensión!</p>
+                </div>
+            </div>
+
+            <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
+        </div>
+    </div>
+
+    <script>
+        // LOS 5 CÓDIGOS CONFIGURADOS
+        const codigosInvitacion = {
+            "PEREZSOSAFAMILIA": { familia: "Familia Pérez Sosa", adultos: 3, ninos: 1 },
+            "GOMEZFAMILIA": { familia: "Familia Gómez", adultos: 2, ninos: 1 },
+            "SANDOVALOCHOAFAMILIA": { familia: "Familia: Sandoval Ochoa", adultos: 4, ninos: 2 },
+            "SOLORZANOGARZAFAMILIA": { familia: "Familia: Solorsano Garza", adultos: 2, ninos: 2 },
+            "URRUTIAPEREZFAMILIA": { familia: "Familia: Urrutia Pérez", adultos: 2, ninos: 0 }
+        };
+
+        let codigoActual = "";
+        let datosActuales = null;
+        
+        const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxXFH4vhmdxnulCdYsnNPYSFSgeNwuV-qPNluYmxXXWY1EjCkdXV380hkrVKx4oAjsS/exec";
+
+        function validarCodigo() {
+            const input = document.getElementById("codigoInput").value.trim().toUpperCase();
+            const errorDiv = document.getElementById("error-msg");
+
+            if (codigosInvitacion[input]) {
+                codigoActual = input;
+                datosActuales = codigosInvitacion[input];
+                
+                document.getElementById("nombreFamilia").innerText = datosActuales.familia;
+                
+                let textoPasesStr = `${datosActuales.adultos} ${datosActuales.adultos === 1 ? 'adulto' : 'adultos'}`;
+                if (datosActuales.ninos > 0) {
+                    textoPasesStr += `, ${datosActuales.ninos} ${datosActuales.ninos === 1 ? 'niño' : 'niños'}`;
+                }
+                document.getElementById("textoPases").innerText = textoPasesStr;
+
+                const totalPersonas = datosActuales.adultos + datosActuales.ninos;
+                const selectAsistentes = document.getElementById("asistentesConfirmados");
+                selectAsistentes.innerHTML = "";
+                
+                let i = 1;
+                do {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    option.text = i + (i === 1 ? " persona" : " personas");
+                    selectAsistentes.appendChild(option);
+                    i++;
+                } while (i <= totalPersonas);
+
+                document.getElementById("step-code").classList.add("hidden");
+                document.getElementById("step-rsvp").classList.remove("hidden");
+                errorDiv.classList.add("hidden");
+            } else {
+                errorDiv.innerText = "Código inválido. Por favor, verifica el código impreso en tu tarjeta.";
+                errorDiv.classList.remove("hidden");
+            }
+        }
+
+        function toggleAsistencia() {
+            const asistencia = document.getElementById("asistenciaSelect").value;
+            const grupoSi = document.getElementById("group-si");
+            const grupoNo = document.getElementById("group-no");
+            
+            if (asistencia === "no") {
+                grupoSi.classList.add("hidden");
+                grupoNo.classList.remove("hidden");
+            } else {
+                grupoSi.classList.remove("hidden");
+                grupoNo.classList.add("hidden");
+            }
+        }
+
+        function enviarRSVP() {
+            const asistencia = document.getElementById("asistenciaSelect").value;
+            let cantidadAsistentes = 0;
+
+            if (asistencia === "si") {
+                cantidadAsistentes = document.getElementById("asistentesConfirmados").value;
+            }
+            
+            const btn = document.getElementById("btnEnviar");
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+
+            // Creamos un iframe oculto para evitar bloqueos de seguridad en iPhone/Safari
+            let iframe = document.getElementById("hidden_iframe");
+            if (!iframe) {
+                iframe = document.createElement("iframe");
+                iframe.name = "hidden_iframe";
+                iframe.id = "hidden_iframe";
+                iframe.style.display = "none";
+                document.body.appendChild(iframe);
+            }
+
+            // Creamos un formulario dinámico que viaja sin bloqueos a Google Sheets
+            const form = document.createElement("form");
+            form.action = urlGoogleScript;
+            form.method = "GET";
+            form.target = "hidden_iframe";
+
+            const datos = {
+                codigo: codigoActual,
+                familia: datosActuales.familia,
+                asistencia: asistencia,
+                cantidad: cantidadAsistentes
+            };
+
+            for (let key in datos) {
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = key;
+                input.value = datos[key];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
+            // Éxito instantáneo para cualquier dispositivo
+            setTimeout(() => {
+                document.getElementById("success-msg").classList.remove("hidden");
+                document.getElementById("asistenciaSelect").disabled = true;
+                document.getElementById("asistentesConfirmados").disabled = true;
+                btn.style.display = "none";
+            }, 500);
+        }
+    </script>
+</body>
+</html>
