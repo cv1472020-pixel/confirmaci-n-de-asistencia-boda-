@@ -198,6 +198,21 @@
             font-weight: 500;
             font-size: 0.85rem;
         }
+
+        .reset-link {
+            margin-top: 30px;
+            font-size: 0.75rem;
+            color: #a0aec0;
+        }
+
+        .reset-link a {
+            color: #a0aec0;
+            text-decoration: underline;
+        }
+
+        .reset-link a:hover {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -212,7 +227,7 @@
             <div id="error-msg" class="alert alert-error hidden"></div>
             <div class="form-group">
                 <label for="codigoInput">Código de Invitación</label>
-                <input type="text" id="codigoInput" placeholder="Ej. PEREZSOSAFAMILIA">
+                <input type="text" id="codigoInput" placeholder="Ej. 45FG45">
             </div>
             <button onclick="validarCodigo()">Ver Invitación</button>
         </div>
@@ -225,9 +240,10 @@
             </div>
 
             <div id="success-msg" class="alert alert-success hidden">¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.</div>
+            <div id="error-msg-rsvp" class="alert alert-error hidden"></div>
             
             <div class="form-group">
-                <label for="asistenciaSelect">Confirmar Asistencia</label>
+                <label for="asistenciaSelect" id="lblAsistencia">Confirmar Asistencia</label>
                 <select id="asistenciaSelect" onchange="toggleAsistencia()">
                     <option value="si">Sí, ahí estaremos con alegría</option>
                     <option value="no">No podremos asistir</option>
@@ -253,59 +269,135 @@
 
             <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
         </div>
+
+        <div class="reset-link">
+            ¿Problemas con el envío o error en los datos? <a href="#" onclick="localStorage.clear(); alert('Se ha restablecido la memoria del dispositivo. Ya puedes reintentar.'); location.reload();">Restablecer</a>
+        </div>
     </div>
 
     <script>
-        // LOS 5 CÓDIGOS CONFIGURADOS
-        const codigosInvitacion = {
-            "PEREZSOSAFAMILIA": { familia: "Familia Pérez Sosa", adultos: 3, ninos: 1 },
-            "GOMEZFAMILIA": { familia: "Familia Gómez", adultos: 2, ninos: 1 },
-            "SANDOVALOCHOAFAMILIA": { familia: "Familia: Sandoval Ochoa", adultos: 4, ninos: 2 },
-            "SOLORZANOGARZAFAMILIA": { familia: "Familia: Solorsano Garza", adultos: 2, ninos: 2 },
-            "URRUTIAPEREZFAMILIA": { familia: "Familia: Urrutia Pérez", adultos: 2, ninos: 0 }
-        };
+        const SHEET_ID = "1O_MrmRYRIHUShP-n0U3JI7zC7p8Ka3lFedu8MqKWHZ8";
+        
+        // ⚠️ IMPORTANTE: Reemplaza el texto de abajo con la URL real que obtienes
+        // al desplegar tu Apps Script como "Aplicación web" (termina en /exec).
+        // Ejemplo: "https://script.google.com/macros/s/AKfycb.../exec"
+        // Mientras esta URL siga siendo el placeholder, el formulario NUNCA
+        // enviará datos al Sheet, aunque muestre el mensaje de éxito.
+        const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxUjRIi8fdvuFgzvGe08WROaAka_qfA-_WuEldzsBnVeJq2eykr6ewV1KEDJpHE8m0B/exec";
 
         let codigoActual = "";
         let datosActuales = null;
-        
-        const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxXFH4vhmdxnulCdYsnNPYSFSgeNwuV-qPNluYmxXXWY1EjCkdXV380hkrVKx4oAjsS/exec";
 
         function validarCodigo() {
             const input = document.getElementById("codigoInput").value.trim().toUpperCase();
             const errorDiv = document.getElementById("error-msg");
 
-            if (codigosInvitacion[input]) {
-                codigoActual = input;
-                datosActuales = codigosInvitacion[input];
-                
-                document.getElementById("nombreFamilia").innerText = datosActuales.familia;
-                
-                let textoPasesStr = `${datosActuales.adultos} ${datosActuales.adultos === 1 ? 'adulto' : 'adultos'}`;
-                if (datosActuales.ninos > 0) {
-                    textoPasesStr += `, ${datosActuales.ninos} ${datosActuales.ninos === 1 ? 'niño' : 'niños'}`;
-                }
-                document.getElementById("textoPases").innerText = textoPasesStr;
-
-                const totalPersonas = datosActuales.adultos + datosActuales.ninos;
-                const selectAsistentes = document.getElementById("asistentesConfirmados");
-                selectAsistentes.innerHTML = "";
-                
-                let i = 1;
-                do {
-                    let option = document.createElement("option");
-                    option.value = i;
-                    option.text = i + (i === 1 ? " persona" : " personas");
-                    selectAsistentes.appendChild(option);
-                    i++;
-                } while (i <= totalPersonas);
-
-                document.getElementById("step-code").classList.add("hidden");
-                document.getElementById("step-rsvp").classList.remove("hidden");
-                errorDiv.classList.add("hidden");
-            } else {
-                errorDiv.innerText = "Código inválido. Por favor, verifica el código impreso en tu tarjeta.";
+            if (!input) {
+                errorDiv.innerText = "Por favor, ingresa tu código.";
                 errorDiv.classList.remove("hidden");
+                return;
             }
+
+            if (localStorage.getItem("rsvp_" + input)) {
+                errorDiv.innerText = "⚠️ Este código ya ha sido utilizado para enviar una respuesta en este dispositivo.";
+                errorDiv.classList.remove("hidden");
+                return;
+            }
+
+            errorDiv.innerText = "Buscando invitación en Google Sheets...";
+            errorDiv.classList.remove("hidden");
+
+            window.handleGvizResponse = function(data) {
+                const oldScript = document.getElementById("gviz-script");
+                if (oldScript) oldScript.remove();
+
+                try {
+                    const filas = data.table.rows;
+                    let encontrado = false;
+
+                    for (let r = 0; r < filas.length; r++) {
+                        const row = filas[r].c;
+                        if (!row) continue;
+
+                        const codigoCol = (row[1] && row[1].v !== null) ? row[1].v.toString().trim().toUpperCase() : "";
+
+                        if (codigoCol === input) {
+                            encontrado = true;
+
+                            const familia = (row[2] && row[2].v !== null) ? row[2].v.toString() : "Invitado Especial";
+                            const estatus = (row[3] && row[3].v !== null) ? row[3].v.toString().trim() : "";
+                            const cuotaRaw = (row[4] && row[4].v !== null) ? row[4].v.toString() : "1|0";
+
+                            if (estatus !== "") {
+                                errorDiv.innerText = "⚠️ Este código ya ha sido registrado previamente con una respuesta en la lista.";
+                                errorDiv.classList.remove("hidden");
+                                return;
+                            }
+
+                            let adultos = 1;
+                            let ninos = 0;
+                            if (cuotaRaw.includes("|")) {
+                                const partes = cuotaRaw.split("|");
+                                adultos = parseInt(partes[0]) || 0;
+                                ninos = parseInt(partes[1]) || 0;
+                            } else {
+                                adultos = parseInt(cuotaRaw) || 1;
+                            }
+
+                            codigoActual = input;
+                            datosActuales = { familia, adultos, ninos };
+
+                            document.getElementById("nombreFamilia").innerText = familia;
+
+                            let textoPasesStr = `${adultos} ${adultos === 1 ? 'adulto' : 'adultos'}`;
+                            if (ninos > 0) {
+                                textoPasesStr += `, ${ninos} ${ninos === 1 ? 'niño' : 'niños'}`;
+                            }
+                            document.getElementById("textoPases").innerText = textoPasesStr;
+
+                            const totalPersonas = adultos + ninos;
+                            const selectAsistentes = document.getElementById("asistentesConfirmados");
+                            selectAsistentes.innerHTML = "";
+
+                            let i = 1;
+                            do {
+                                let option = document.createElement("option");
+                                option.value = i;
+                                option.text = i + (i === 1 ? " persona" : " personas");
+                                selectAsistentes.appendChild(option);
+                                i++;
+                            } while (i <= totalPersonas);
+
+                            document.getElementById("step-code").classList.add("hidden");
+                            document.getElementById("step-rsvp").classList.remove("hidden");
+                            errorDiv.classList.add("hidden");
+                            break;
+                        }
+                    }
+
+                    if (!encontrado) {
+                        errorDiv.innerText = "Código inválido. Por favor, verifica el código impreso en tu tarjeta.";
+                        errorDiv.classList.remove("hidden");
+                    }
+
+                } catch (err) {
+                    console.error("Error al procesar datos:", err);
+                    errorDiv.innerText = "Error al procesar la lista. Por favor intenta nuevamente.";
+                    errorDiv.classList.remove("hidden");
+                }
+            };
+
+            const prevScript = document.getElementById("gviz-script");
+            if (prevScript) prevScript.remove();
+
+            const script = document.createElement("script");
+            script.id = "gviz-script";
+            script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleGvizResponse&_=${Date.now()}`;
+            script.onerror = function() {
+                errorDiv.innerText = "Error al conectar con la hoja. Asegúrate de tener conexión a Internet.";
+                errorDiv.classList.remove("hidden");
+            };
+            document.body.appendChild(script);
         }
 
         function toggleAsistencia() {
@@ -323,59 +415,56 @@
         }
 
         function enviarRSVP() {
-            const asistencia = document.getElementById("asistenciaSelect").value;
-            let cantidadAsistentes = 0;
-
-            if (asistencia === "si") {
-                cantidadAsistentes = document.getElementById("asistentesConfirmados").value;
+            // Validación: evita que se envíe si nunca configuraste la URL real del Apps Script
+            if (!URL_APPS_SCRIPT || URL_APPS_SCRIPT === "TU_URL_DE_APPS_SCRIPT_AQUI") {
+                const errorDiv = document.getElementById("error-msg-rsvp");
+                errorDiv.innerText = "⚠️ Error de configuración: falta la URL del Apps Script en el código (variable URL_APPS_SCRIPT). Contacta al administrador de la página.";
+                errorDiv.classList.remove("hidden");
+                console.error("URL_APPS_SCRIPT no ha sido configurada. Reemplaza el placeholder en el código.");
+                return;
             }
+
+            const asistencia = document.getElementById("asistenciaSelect").value;
+            let cantidadAsistentes = asistencia === "si" ? document.getElementById("asistentesConfirmados").value : "0";
             
             const btn = document.getElementById("btnEnviar");
             btn.innerText = "Enviando...";
             btn.disabled = true;
 
-            // Creamos un iframe oculto para evitar bloqueos de seguridad en iPhone/Safari
-            let iframe = document.getElementById("hidden_iframe");
-            if (!iframe) {
-                iframe = document.createElement("iframe");
-                iframe.name = "hidden_iframe";
-                iframe.id = "hidden_iframe";
-                iframe.style.display = "none";
-                document.body.appendChild(iframe);
-            }
+            const formData = new URLSearchParams();
+            formData.append("codigo", codigoActual);
+            formData.append("asistencia", asistencia);
+            formData.append("cantidad", cantidadAsistentes);
 
-            // Creamos un formulario dinámico que viaja sin bloqueos a Google Sheets
-            const form = document.createElement("form");
-            form.action = urlGoogleScript;
-            form.method = "GET";
-            form.target = "hidden_iframe";
-
-            const datos = {
-                codigo: codigoActual,
-                familia: datosActuales.familia,
-                asistencia: asistencia,
-                cantidad: cantidadAsistentes
-            };
-
-            for (let key in datos) {
-                let input = document.createElement("input");
-                input.type = "hidden";
-                input.name = key;
-                input.value = datos[key];
-                form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-
-            // Éxito instantáneo para cualquier dispositivo
-            setTimeout(() => {
+            // Nota: Apps Script (Web App) no soporta bien las cabeceras CORS al leer
+            // la respuesta desde el navegador, así que usamos "no-cors". Esto significa
+            // que no podemos leer el contenido de la respuesta, pero la petición SÍ llega
+            // y se ejecuta doPost() en el servidor con normalidad.
+            fetch(URL_APPS_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            })
+            .then(() => {
+                // Con "no-cors" siempre entra aquí si la petición se pudo enviar
+                // (no significa necesariamente que el servidor respondió "Éxito",
+                // pero si la URL es correcta, doPost() ya se ejecutó).
+                localStorage.setItem("rsvp_" + codigoActual, "true");
                 document.getElementById("success-msg").classList.remove("hidden");
                 document.getElementById("asistenciaSelect").disabled = true;
                 document.getElementById("asistentesConfirmados").disabled = true;
                 btn.style.display = "none";
-            }, 500);
+            })
+            .catch(err => {
+                // Aquí sí es un error real: la petición nunca salió (sin internet,
+                // URL mal escrita, dominio bloqueado, etc.). NO marcamos éxito falso.
+                console.error("Error enviando datos:", err);
+                const errorDiv = document.getElementById("error-msg-rsvp");
+                errorDiv.innerText = "⚠️ No se pudo enviar tu respuesta. Verifica tu conexión a internet e inténtalo de nuevo.";
+                errorDiv.classList.remove("hidden");
+                btn.innerText = "Enviar Respuesta";
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
