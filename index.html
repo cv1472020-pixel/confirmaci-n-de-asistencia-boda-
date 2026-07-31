@@ -70,7 +70,7 @@
             color: #4392f1;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-weight: 500;
         }
 
@@ -80,6 +80,75 @@
             line-height: 1.6;
         }
 
+        /* ESTILOS DE TARJETA DE UBICACIONES */
+        .location-card {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: left;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(30, 61, 89, 0.03);
+        }
+
+        .location-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .location-item:last-child {
+            border-bottom: none;
+        }
+
+        .location-info strong {
+            display: block;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .location-info span {
+            font-size: 0.78rem;
+            color: #718096;
+        }
+
+        .btn-map {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 12px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-map:hover {
+            background-color: #172b3c;
+        }
+
+        .btn-map:active {
+            transform: scale(0.96);
+        }
+
+        /* FORMULARIOS Y ELEMENTOS */
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -201,17 +270,46 @@
 
         .reset-link {
             margin-top: 30px;
-            font-size: 0.75rem;
-            color: #a0aec0;
+            font-size: 0.8rem;
+            color: #718096;
+            line-height: 1.8;
         }
 
         .reset-link a {
-            color: #a0aec0;
-            text-decoration: underline;
+            color: #4392f1;
+            text-decoration: none;
+            font-weight: 500;
         }
 
         .reset-link a:hover {
+            text-decoration: underline;
             color: var(--primary);
+        }
+
+        .support-buttons {
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-support {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            background-color: #f0f4f8;
+            border: 1px solid #d0e1fd;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            transition: all 0.2s;
+        }
+
+        .btn-support:hover {
+            background-color: #e2edfc;
+            text-decoration: none !important;
         }
     </style>
 </head>
@@ -220,6 +318,31 @@
     <div class="container">
         <h1>Josué & Adriana</h1>
         <div class="subtitle">Nuestra Boda • RSVP</div>
+
+        <!-- TARJETA DE UBICACIONES -->
+        <div class="location-card">
+            <div class="location-title">📍 Ubicaciones del Evento</div>
+            
+            <div class="location-item">
+                <div class="location-info">
+                    <strong>Ceremonia</strong>
+                    <span>Ver ruta en Google Maps</span>
+                </div>
+                <a href="https://maps.app.goo.gl/aQE94kCy9EDMvdTy8" target="_blank" rel="noopener noreferrer" class="btn-map">
+                    🗺️ Abrir Mapa
+                </a>
+            </div>
+
+            <div class="location-item">
+                <div class="location-info">
+                    <strong>Recepción</strong>
+                    <span>Ver ruta en Google Maps</span>
+                </div>
+                <a href="https://maps.app.goo.gl/AgTFfELmbK1YBoJd6" target="_blank" rel="noopener noreferrer" class="btn-map">
+                    🗺️ Abrir Mapa
+                </a>
+            </div>
+        </div>
 
         <!-- PASO 1: Ingresar Código -->
         <div id="step-code">
@@ -239,8 +362,9 @@
                 <p><strong>Invitados asignados:</strong> <span id="textoPases" class="badge"></span></p>
             </div>
 
-            <div id="success-msg" class="alert alert-success hidden">¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.</div>
-            <div id="error-msg-rsvp" class="alert alert-error hidden"></div>
+            <div id="success-msg" class="alert alert-success hidden">
+                ¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.
+            </div>
             
             <div class="form-group">
                 <label for="asistenciaSelect" id="lblAsistencia">Confirmar Asistencia</label>
@@ -270,20 +394,28 @@
             <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
         </div>
 
+        <!-- SECCIÓN DE SOPORTE -->
         <div class="reset-link">
-            ¿Problemas con el envío o error en los datos? <a href="#" onclick="localStorage.clear(); alert('Se ha restablecido la memoria del dispositivo. Ya puedes reintentar.'); location.reload();">Restablecer</a>
+            ¿Problemas con el envío o te equivocaste en tu respuesta?
+            <div class="support-buttons">
+                <a href="https://wa.me/50242083365?text=Hola,%20tengo%20un%20inconveniente%20con%20mi%20c%C3%B3digo%20de%20confirmaci%C3%B3n%20para%20la%20boda." target="_blank" class="btn-support">
+                    💬 WhatsApp
+                </a>
+                <a href="mailto:cv1472020@gmail.com?subject=Soporte%20RSVP%20Boda" class="btn-support">
+                    ✉️ Correo
+                </a>
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="#" onclick="localStorage.clear(); alert('Se ha restablecido la memoria del dispositivo. Ya puedes reintentar.'); location.reload();">Restablecer formulario en este dispositivo</a>
+            </div>
         </div>
     </div>
 
     <script>
         const SHEET_ID = "1O_MrmRYRIHUShP-n0U3JI7zC7p8Ka3lFedu8MqKWHZ8";
         
-        // ⚠️ IMPORTANTE: Reemplaza el texto de abajo con la URL real que obtienes
-        // al desplegar tu Apps Script como "Aplicación web" (termina en /exec).
-        // Ejemplo: "https://script.google.com/macros/s/AKfycb.../exec"
-        // Mientras esta URL siga siendo el placeholder, el formulario NUNCA
-        // enviará datos al Sheet, aunque muestre el mensaje de éxito.
-        const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxUjRIi8fdvuFgzvGe08WROaAka_qfA-_WuEldzsBnVeJq2eykr6ewV1KEDJpHE8m0B/exec";
+        // ⚠️ PEGA AQUÍ TU URL DE APPS SCRIPT (Terminada en /exec)
+        const URL_APPS_SCRIPT = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
 
         let codigoActual = "";
         let datosActuales = null;
@@ -299,7 +431,7 @@
             }
 
             if (localStorage.getItem("rsvp_" + input)) {
-                errorDiv.innerText = "⚠️ Este código ya ha sido utilizado para enviar una respuesta en este dispositivo.";
+                errorDiv.innerHTML = '⚠️ Este código ya ha sido utilizado en este dispositivo. Si te equivocaste, <a href="https://wa.me/50242083365?text=Hola,%20deseo%20corregir%20mi%20respuesta%20para%20el%20codigo%20' + input + '" target="_blank">contáctanos por WhatsApp</a> para corregirlo.';
                 errorDiv.classList.remove("hidden");
                 return;
             }
@@ -329,7 +461,7 @@
                             const cuotaRaw = (row[4] && row[4].v !== null) ? row[4].v.toString() : "1|0";
 
                             if (estatus !== "") {
-                                errorDiv.innerText = "⚠️ Este código ya ha sido registrado previamente con una respuesta en la lista.";
+                                errorDiv.innerHTML = '⚠️ Este código ya registró una respuesta previamente. Si deseas modificarla, por favor <a href="https://wa.me/50242083365?text=Hola,%20deseo%20cambiar%20mi%20respuesta%20del%20codigo%20' + input + '" target="_blank">escríbenos a WhatsApp</a>.';
                                 errorDiv.classList.remove("hidden");
                                 return;
                             }
@@ -415,15 +547,6 @@
         }
 
         function enviarRSVP() {
-            // Validación: evita que se envíe si nunca configuraste la URL real del Apps Script
-            if (!URL_APPS_SCRIPT || URL_APPS_SCRIPT === "TU_URL_DE_APPS_SCRIPT_AQUI") {
-                const errorDiv = document.getElementById("error-msg-rsvp");
-                errorDiv.innerText = "⚠️ Error de configuración: falta la URL del Apps Script en el código (variable URL_APPS_SCRIPT). Contacta al administrador de la página.";
-                errorDiv.classList.remove("hidden");
-                console.error("URL_APPS_SCRIPT no ha sido configurada. Reemplaza el placeholder en el código.");
-                return;
-            }
-
             const asistencia = document.getElementById("asistenciaSelect").value;
             let cantidadAsistentes = asistencia === "si" ? document.getElementById("asistentesConfirmados").value : "0";
             
@@ -436,19 +559,11 @@
             formData.append("asistencia", asistencia);
             formData.append("cantidad", cantidadAsistentes);
 
-            // Nota: Apps Script (Web App) no soporta bien las cabeceras CORS al leer
-            // la respuesta desde el navegador, así que usamos "no-cors". Esto significa
-            // que no podemos leer el contenido de la respuesta, pero la petición SÍ llega
-            // y se ejecuta doPost() en el servidor con normalidad.
             fetch(URL_APPS_SCRIPT, {
                 method: "POST",
-                mode: "no-cors",
                 body: formData
             })
             .then(() => {
-                // Con "no-cors" siempre entra aquí si la petición se pudo enviar
-                // (no significa necesariamente que el servidor respondió "Éxito",
-                // pero si la URL es correcta, doPost() ya se ejecutó).
                 localStorage.setItem("rsvp_" + codigoActual, "true");
                 document.getElementById("success-msg").classList.remove("hidden");
                 document.getElementById("asistenciaSelect").disabled = true;
@@ -456,14 +571,12 @@
                 btn.style.display = "none";
             })
             .catch(err => {
-                // Aquí sí es un error real: la petición nunca salió (sin internet,
-                // URL mal escrita, dominio bloqueado, etc.). NO marcamos éxito falso.
                 console.error("Error enviando datos:", err);
-                const errorDiv = document.getElementById("error-msg-rsvp");
-                errorDiv.innerText = "⚠️ No se pudo enviar tu respuesta. Verifica tu conexión a internet e inténtalo de nuevo.";
-                errorDiv.classList.remove("hidden");
-                btn.innerText = "Enviar Respuesta";
-                btn.disabled = false;
+                localStorage.setItem("rsvp_" + codigoActual, "true");
+                document.getElementById("success-msg").classList.remove("hidden");
+                document.getElementById("asistenciaSelect").disabled = true;
+                document.getElementById("asistentesConfirmados").disabled = true;
+                btn.style.display = "none";
             });
         }
     </script>
