@@ -350,6 +350,133 @@
             background-color: #e2edfc;
             text-decoration: none !important;
         }
+
+        /* HINT DE DESPLAZAMIENTO */
+        .scroll-hint {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%) translateY(14px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(10, 24, 38, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.45s ease, transform 0.45s ease;
+            z-index: 999;
+            max-width: 88%;
+            text-align: left;
+        }
+
+        .scroll-hint.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .scroll-hint .arrow {
+            display: inline-block;
+            font-size: 1.1rem;
+            line-height: 1;
+            animation: bounceArrow 1s infinite;
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* SECCIÓN DE COMENTARIOS */
+        .comment-section {
+            margin-top: 22px;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: left;
+            background: linear-gradient(135deg, #fdf6f0 0%, #f4f8fb 100%);
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 18px rgba(30, 61, 89, 0.06);
+        }
+
+        .comment-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .comment-subtitle {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 14px;
+            font-weight: 300;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .comment-textarea:focus {
+            border-color: #4392f1;
+            box-shadow: 0 0 0 3px rgba(67, 146, 241, 0.1);
+        }
+
+        .word-counter {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            text-align: right;
+            margin-top: -8px;
+            margin-bottom: 12px;
+        }
+
+        .word-counter.limit-reached {
+            color: #c53030;
+            font-weight: 500;
+        }
+
+        .btn-comment {
+            background-color: #ffffff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.25s ease;
+        }
+
+        .btn-comment:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .comment-success {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #276749;
+            font-weight: 500;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -433,6 +560,16 @@
             </div>
 
             <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
+
+            <!-- SECCIÓN DE COMENTARIOS -->
+            <div id="comment-section" class="comment-section hidden">
+                <div class="comment-title">💌 Déjales un mensaje</div>
+                <p class="comment-subtitle">Comparte unas palabras, un deseo o un buen consejo para Josué &amp; Adriana.</p>
+                <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu mensaje..." oninput="limitarPalabras(this)"></textarea>
+                <div id="wordCounter" class="word-counter">0/30 palabras</div>
+                <button id="btnComentario" class="btn-comment" onclick="enviarComentario()">Enviar mensaje</button>
+                <div id="comentario-success" class="comment-success hidden">¡Gracias por tu bonito mensaje! 💕</div>
+            </div>
         </div>
 
         <!-- SECCIÓN DE SOPORTE -->
@@ -450,6 +587,11 @@
                 <a href="#" onclick="localStorage.clear(); alert('Se ha restablecido la memoria del dispositivo. Ya puedes reintentar.'); location.reload();">Restablecer formulario en este dispositivo</a>
             </div>
         </div>
+    </div>
+
+    <div id="scrollHint" class="scroll-hint">
+        <span class="arrow">⌄</span>
+        <span id="scrollHintText"></span>
     </div>
 
     <script>
@@ -543,6 +685,7 @@
 
                             document.getElementById("step-code").classList.add("hidden");
                             document.getElementById("step-rsvp").classList.remove("hidden");
+                            document.getElementById("comment-section").classList.remove("hidden");
                             errorDiv.classList.add("hidden");
                             break;
                         }
@@ -611,6 +754,7 @@
                 document.getElementById("asistenciaSelect").disabled = true;
                 document.getElementById("asistentesConfirmados").disabled = true;
                 btn.style.display = "none";
+                document.getElementById("comment-section").classList.remove("hidden");
             })
             .catch(err => {
                 console.error("Error enviando datos:", err);
@@ -619,6 +763,110 @@
                 alert("Hubo un error al enviar la información. Por favor intenta de nuevo.");
             });
         }
+
+        function limitarPalabras(textarea) {
+            const counter = document.getElementById("wordCounter");
+            let palabras = textarea.value.trim().length ? textarea.value.trim().split(/\s+/) : [];
+
+            if (palabras.length > 30) {
+                palabras = palabras.slice(0, 30);
+                textarea.value = palabras.join(" ") + (textarea.value.endsWith(" ") ? " " : "");
+            }
+
+            counter.innerText = palabras.length + "/30 palabras";
+            counter.classList.toggle("limit-reached", palabras.length >= 30);
+        }
+
+        function enviarComentario() {
+            const textarea = document.getElementById("comentarioInput");
+            let comentario = textarea.value.trim();
+            const btnCom = document.getElementById("btnComentario");
+            const successCom = document.getElementById("comentario-success");
+
+            if (!comentario) {
+                alert("Escribe un mensaje antes de enviarlo 💌");
+                return;
+            }
+
+            // seguridad extra: recorta a 30 palabras aunque hayan pegado texto largo
+            const palabras = comentario.split(/\s+/);
+            if (palabras.length > 30) {
+                comentario = palabras.slice(0, 30).join(" ");
+            }
+
+            btnCom.innerText = "Enviando...";
+            btnCom.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append("codigo", codigoActual);
+            formData.append("comentario", comentario);
+
+            fetch(URL_APPS_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            })
+            .then(() => {
+                textarea.disabled = true;
+                btnCom.style.display = "none";
+                successCom.classList.remove("hidden");
+            })
+            .catch(err => {
+                console.error("Error enviando comentario:", err);
+                btnCom.innerText = "Reintentar envío";
+                btnCom.disabled = false;
+                alert("Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.");
+            });
+        }
+
+        // HINT ANIMADO: recuerda al usuario que puede desplazarse para completar el paso actual
+        (function () {
+            const hint = document.getElementById("scrollHint");
+            const hintText = document.getElementById("scrollHintText");
+            let hideTimeout = null;
+
+            function isAtBottom() {
+                return (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 40);
+            }
+
+            function pulseHint() {
+                if (isAtBottom()) {
+                    hint.classList.remove("show");
+                    return; // ya llegó al final, no seguir mostrando la flecha
+                }
+
+                const stepCode = document.getElementById("step-code");
+                const stepRsvp = document.getElementById("step-rsvp");
+                const successMsg = document.getElementById("success-msg");
+
+                const codeVisible = stepCode && !stepCode.classList.contains("hidden");
+                const rsvpVisible = stepRsvp && !stepRsvp.classList.contains("hidden");
+                const alreadySent = successMsg && !successMsg.classList.contains("hidden");
+
+                if (alreadySent) return; // ya confirmó, no molestar más
+
+                if (codeVisible) {
+                    hintText.innerText = "Desliza para escribir tu código";
+                } else if (rsvpVisible) {
+                    hintText.innerText = "Desliza para confirmar si asistes";
+                } else {
+                    return;
+                }
+
+                hint.classList.add("show");
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => hint.classList.remove("show"), 2600);
+            }
+
+            // primer aviso poco después de cargar, luego cada 6 segundos
+            setTimeout(pulseHint, 1500);
+            setInterval(pulseHint, 6000);
+
+            // ocultar inmediatamente si el usuario llega al fondo mientras la flecha está visible
+            window.addEventListener("scroll", () => {
+                if (isAtBottom()) hint.classList.remove("show");
+            });
+        })();
     </script>
 </body>
 </html>
