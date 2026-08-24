@@ -544,8 +544,15 @@
 
             <!-- SECCIÓN SI ASISTEN -->
             <div id="group-si" class="form-group">
-                <label for="asistentesConfirmados">Personas que asistirán</label>
-                <select id="asistentesConfirmados">
+                <label for="adultosConfirmados">Adultos que asistirán</label>
+                <select id="adultosConfirmados">
+                    <!-- Se llena dinámicamente -->
+                </select>
+            </div>
+
+            <div id="group-ninos" class="form-group hidden">
+                <label for="ninosConfirmados">Niños que asistirán</label>
+                <select id="ninosConfirmados">
                     <!-- Se llena dinámicamente -->
                 </select>
             </div>
@@ -561,14 +568,14 @@
 
             <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
 
-            <!-- SECCIÓN DE COMENTARIOS -->
+            <!-- PANEL DE DUDAS SOBRE EL EVENTO -->
             <div id="comment-section" class="comment-section hidden">
-                <div class="comment-title">💌 Déjales un mensaje</div>
-                <p class="comment-subtitle">Comparte unas palabras, un deseo o un buen consejo para Josué &amp; Adriana.</p>
-                <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu mensaje..." oninput="limitarPalabras(this)"></textarea>
-                <div id="wordCounter" class="word-counter">0/30 palabras</div>
-                <button id="btnComentario" class="btn-comment" onclick="enviarComentario()">Enviar mensaje</button>
-                <div id="comentario-success" class="comment-success hidden">¡Gracias por tu bonito mensaje! 💕</div>
+                <div class="comment-title">❓ ¿Alguna duda?</div>
+                <p class="comment-subtitle">Alguna duda sobre el evento, háganoslo saber para analizar la situación y poder resolverla.</p>
+                <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu duda..." oninput="limitarPalabras(this)"></textarea>
+                <div id="wordCounter" class="word-counter">0/40 palabras</div>
+                <button id="btnComentario" class="btn-comment" onclick="enviarComentario()">Enviar duda</button>
+                <div id="comentario-success" class="comment-success hidden">¡Gracias por escribirnos! Vamos a revisar tu duda y te responderemos lo más pronto posible. 🙏</div>
             </div>
         </div>
 
@@ -671,17 +678,34 @@
                             document.getElementById("textoPases").innerText = textoPasesStr;
 
                             const totalPersonas = adultos + ninos;
-                            const selectAsistentes = document.getElementById("asistentesConfirmados");
-                            selectAsistentes.innerHTML = "";
 
-                            let i = 1;
-                            do {
+                            const selectAdultos = document.getElementById("adultosConfirmados");
+                            selectAdultos.innerHTML = "";
+                            for (let a = adultos; a >= 0; a--) {
                                 let option = document.createElement("option");
-                                option.value = i;
-                                option.text = i + (i === 1 ? " persona" : " personas");
-                                selectAsistentes.appendChild(option);
-                                i++;
-                            } while (i <= totalPersonas);
+                                option.value = a;
+                                option.text = a + (a === 1 ? " adulto" : " adultos");
+                                selectAdultos.appendChild(option);
+                            }
+
+                            const grupoNinos = document.getElementById("group-ninos");
+                            const selectNinos = document.getElementById("ninosConfirmados");
+                            selectNinos.innerHTML = "";
+                            if (ninos > 0) {
+                                grupoNinos.classList.remove("hidden");
+                                for (let n = ninos; n >= 0; n--) {
+                                    let option = document.createElement("option");
+                                    option.value = n;
+                                    option.text = n + (n === 1 ? " niño" : " niños");
+                                    selectNinos.appendChild(option);
+                                }
+                            } else {
+                                grupoNinos.classList.add("hidden");
+                                let option = document.createElement("option");
+                                option.value = 0;
+                                option.text = "0 niños";
+                                selectNinos.appendChild(option);
+                            }
 
                             document.getElementById("step-code").classList.add("hidden");
                             document.getElementById("step-rsvp").classList.remove("hidden");
@@ -719,21 +743,33 @@
         function toggleAsistencia() {
             const asistencia = document.getElementById("asistenciaSelect").value;
             const grupoSi = document.getElementById("group-si");
+            const grupoNinos = document.getElementById("group-ninos");
             const grupoNo = document.getElementById("group-no");
             
             if (asistencia === "no") {
                 grupoSi.classList.add("hidden");
+                grupoNinos.classList.add("hidden");
                 grupoNo.classList.remove("hidden");
             } else {
                 grupoSi.classList.remove("hidden");
+                if (datosActuales && datosActuales.ninos > 0) {
+                    grupoNinos.classList.remove("hidden");
+                }
                 grupoNo.classList.add("hidden");
             }
         }
 
         function enviarRSVP() {
             const asistencia = document.getElementById("asistenciaSelect").value;
-            let cantidadAsistentes = asistencia === "si" ? document.getElementById("asistentesConfirmados").value : "0";
-            
+            const adultosConfirmados = asistencia === "si" ? parseInt(document.getElementById("adultosConfirmados").value) : 0;
+            const ninosConfirmados = asistencia === "si" ? parseInt(document.getElementById("ninosConfirmados").value) : 0;
+            const cantidadAsistentes = adultosConfirmados + ninosConfirmados;
+
+            if (asistencia === "si" && cantidadAsistentes === 0) {
+                alert("Selecciona al menos 1 persona que asistirá.");
+                return;
+            }
+
             const btn = document.getElementById("btnEnviar");
             btn.innerText = "Enviando...";
             btn.disabled = true;
@@ -742,6 +778,8 @@
             formData.append("codigo", codigoActual);
             formData.append("asistencia", asistencia);
             formData.append("cantidad", cantidadAsistentes);
+            formData.append("adultos", adultosConfirmados);
+            formData.append("ninos", ninosConfirmados);
 
             fetch(URL_APPS_SCRIPT, {
                 method: "POST",
@@ -752,7 +790,8 @@
                 localStorage.setItem("rsvp_" + codigoActual, "true");
                 document.getElementById("success-msg").classList.remove("hidden");
                 document.getElementById("asistenciaSelect").disabled = true;
-                document.getElementById("asistentesConfirmados").disabled = true;
+                document.getElementById("adultosConfirmados").disabled = true;
+                document.getElementById("ninosConfirmados").disabled = true;
                 btn.style.display = "none";
                 document.getElementById("comment-section").classList.remove("hidden");
             })
@@ -768,13 +807,13 @@
             const counter = document.getElementById("wordCounter");
             let palabras = textarea.value.trim().length ? textarea.value.trim().split(/\s+/) : [];
 
-            if (palabras.length > 30) {
-                palabras = palabras.slice(0, 30);
+            if (palabras.length > 40) {
+                palabras = palabras.slice(0, 40);
                 textarea.value = palabras.join(" ") + (textarea.value.endsWith(" ") ? " " : "");
             }
 
-            counter.innerText = palabras.length + "/30 palabras";
-            counter.classList.toggle("limit-reached", palabras.length >= 30);
+            counter.innerText = palabras.length + "/40 palabras";
+            counter.classList.toggle("limit-reached", palabras.length >= 40);
         }
 
         function enviarComentario() {
@@ -784,14 +823,14 @@
             const successCom = document.getElementById("comentario-success");
 
             if (!comentario) {
-                alert("Escribe un mensaje antes de enviarlo 💌");
+                alert("Escribe tu duda antes de enviarla ❓");
                 return;
             }
 
-            // seguridad extra: recorta a 30 palabras aunque hayan pegado texto largo
+            // seguridad extra: recorta a 40 palabras aunque hayan pegado texto largo
             const palabras = comentario.split(/\s+/);
-            if (palabras.length > 30) {
-                comentario = palabras.slice(0, 30).join(" ");
+            if (palabras.length > 40) {
+                comentario = palabras.slice(0, 40).join(" ");
             }
 
             btnCom.innerText = "Enviando...";
@@ -868,5 +907,6 @@
             });
         })();
     </script>
+    <div style="position:fixed; bottom:4px; left:6px; font-size:10px; color:rgba(255,255,255,0.55); z-index:1000; pointer-events:none; font-family: monospace;">v2.3-panel-dudas</div>
 </body>
 </html>
