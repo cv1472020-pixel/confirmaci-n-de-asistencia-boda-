@@ -283,12 +283,75 @@
             color: #b7c6d6;
         }
 
-        /* Preview: mosaico pequeño dentro de la tarjeta */
+        /* ---- GALERÍA: tarjeta de entrada ---- */
+        @keyframes galleryShimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .gallery-title {
+            margin-bottom: 12px;
+        }
+
+        .gallery-subtitle {
+            display: flex;
+            align-items: center;
+            margin: 0 0 14px;
+        }
+
+        /* sin fotos todavía: no dejar un hueco vacío bajo el título */
+        .gallery-subtitle:has(.gallery-count.hidden) {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .gallery-title { font-size: 1.15rem; }
+        }
+
+        .gallery-count {
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        /* Estado de carga: los cuadritos brillan en lugar de mostrar el mensaje "aún no hay fotos" */
+        #galeria-contenido.is-loading .gallery-icon,
+        #galeria-contenido.is-loading > p {
+            display: none;
+        }
+
+        #galeria-contenido.is-loading {
+            border-style: solid;
+            padding: 16px;
+        }
+
+        #galeria-contenido.is-loading .gallery-grid {
+            margin-top: 0;
+        }
+
+        #galeria-contenido.is-loading .gallery-grid span {
+            font-size: 0;
+            background: linear-gradient(90deg, #eef3f8 25%, #dfe9f4 50%, #eef3f8 75%);
+            background-size: 200% 100%;
+            animation: galleryShimmer 1.4s linear infinite;
+        }
+
+        /* Mosaico de vista previa */
         .gallery-preview-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 6px;
         }
+
+        .gallery-preview-grid.n-few { grid-template-columns: repeat(2, 1fr); }
+        .gallery-preview-grid.n-one { grid-template-columns: 1fr; }
 
         .gallery-preview-grid .preview-item {
             position: relative;
@@ -296,30 +359,74 @@
             overflow: hidden;
             border-radius: 10px;
             cursor: pointer;
+            background: linear-gradient(90deg, #eef3f8 25%, #dfe9f4 50%, #eef3f8 75%);
+            background-size: 200% 100%;
         }
 
+        /* 6 o más fotos: la primera es grande (2x2) y el resto rodea */
+        .gallery-preview-grid.n-mosaic .preview-item:first-child {
+            grid-column: span 2;
+            grid-row: span 2;
+            aspect-ratio: auto;
+        }
+
+        /* 3 o 5 fotos: la primera ocupa todo el ancho */
+        .gallery-preview-grid.n-few.odd .preview-item:first-child {
+            grid-column: 1 / -1;
+            aspect-ratio: 16 / 10;
+        }
+
+        .gallery-preview-grid.n-one .preview-item {
+            aspect-ratio: 4 / 3;
+        }
+
+        .gallery-preview-grid .preview-item.broken { display: none; }
+
         .gallery-preview-grid img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform 0.4s ease;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
+        .gallery-preview-grid img.loaded { opacity: 1; }
+
         .gallery-preview-grid .preview-item:hover img {
-            transform: scale(1.08);
+            transform: scale(1.07);
+        }
+
+        .gallery-preview-grid .preview-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 33, 51, 0) 55%, rgba(15, 33, 51, 0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .gallery-preview-grid .preview-item:hover::after { opacity: 1; }
+
+        .gallery-preview-grid .preview-item:focus-visible {
+            outline: 2px solid #4392f1;
+            outline-offset: 2px;
         }
 
         .gallery-preview-grid .preview-more {
             position: absolute;
             inset: 0;
+            z-index: 1;
             background: rgba(20, 25, 30, 0.55);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 600;
         }
 
@@ -352,9 +459,10 @@
         .gallery-fullscreen {
             position: fixed;
             inset: 0;
-            background: #0f1417;
+            background: #0d1114;
             z-index: 2500;
             overflow-y: auto;
+            overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
             animation: galleryFadeIn 0.25s ease;
         }
@@ -375,9 +483,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 20px;
-            background: linear-gradient(180deg, rgba(15,20,23,0.95), rgba(15,20,23,0.75));
-            backdrop-filter: blur(6px);
+            padding: 16px 20px;
+            background: linear-gradient(180deg, rgba(13, 17, 20, 0.97), rgba(13, 17, 20, 0.82));
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
         .gallery-fs-header h2 {
@@ -387,14 +496,25 @@
             font-weight: 600;
             margin: 0;
             letter-spacing: 0.3px;
+            line-height: 1.1;
+        }
+
+        .gallery-fs-count {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(245, 241, 232, 0.55);
         }
 
         .gallery-fs-close {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             color: #f5f1e8;
             width: 38px;
             height: 38px;
+            padding: 0;
             border-radius: 50%;
             font-size: 1.1rem;
             line-height: 1;
@@ -403,10 +523,11 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s ease;
+            box-shadow: none;
         }
 
         .gallery-fs-close:hover {
-            background: rgba(255,255,255,0.18);
+            background: rgba(255, 255, 255, 0.18);
         }
 
         .gallery-masonry {
@@ -420,35 +541,76 @@
         }
 
         .gallery-masonry .masonry-item {
+            position: relative;
             break-inside: avoid;
             margin-bottom: 10px;
+            min-height: 140px;
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            opacity: 0;
-            animation: masonryFadeIn 0.5s ease forwards;
+            background: linear-gradient(90deg, #172026 25%, #222d35 50%, #172026 75%);
+            background-size: 200% 100%;
+            animation: galleryShimmer 1.6s linear infinite;
         }
 
-        @keyframes masonryFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .gallery-masonry .masonry-item.loaded {
+            min-height: 0;
+            animation: none;
+            background: #172026;
         }
+
+        .gallery-masonry .masonry-item.broken { display: none; }
 
         .gallery-masonry img {
             width: 100%;
             display: block;
-            transition: transform 0.35s ease;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.4s ease;
+        }
+
+        .gallery-masonry .masonry-item.loaded img {
+            opacity: 1;
         }
 
         .gallery-masonry .masonry-item:hover img {
             transform: scale(1.04);
         }
 
+        .gallery-masonry .masonry-item::after {
+            content: '⤢';
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+        }
+
+        .gallery-masonry .masonry-item:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-masonry .masonry-item:focus-visible {
+            outline: 2px solid #f4d58d;
+            outline-offset: 2px;
+        }
+
         /* ---- LIGHTBOX con navegación ---- */
         .gallery-lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(10, 13, 15, 0.96);
+            background: rgba(8, 11, 13, 0.97);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -462,37 +624,69 @@
 
         .gallery-lightbox img {
             max-width: 100%;
-            max-height: 88vh;
+            max-height: 86vh;
             border-radius: 6px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .gallery-lightbox img.ready {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .lightbox-spinner {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #f4d58d;
+            border-radius: 50%;
+            animation: lightboxSpin 0.8s linear infinite;
+        }
+
+        @keyframes lightboxSpin {
+            to { transform: rotate(360deg); }
         }
 
         .lightbox-close,
+        .lightbox-download,
         .lightbox-nav {
             position: absolute;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             color: #f5f1e8;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
+            text-decoration: none;
             transition: background 0.2s ease;
+            box-shadow: none;
         }
 
         .lightbox-close:hover,
+        .lightbox-download:hover,
         .lightbox-nav:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .lightbox-close {
+        .lightbox-close,
+        .lightbox-download {
             top: 18px;
-            right: 18px;
             width: 40px;
             height: 40px;
             font-size: 1.2rem;
         }
+
+        .lightbox-close { right: 18px; }
+        .lightbox-download { right: 68px; }
 
         .lightbox-nav {
             top: 50%;
@@ -504,6 +698,12 @@
 
         .lightbox-prev { left: 14px; }
         .lightbox-next { right: 14px; }
+
+        @media (min-width: 1000px) {
+            .lightbox-nav { width: 54px; height: 54px; font-size: 1.7rem; }
+            .lightbox-prev { left: 28px; }
+            .lightbox-next { right: 28px; }
+        }
 
         .lightbox-counter {
             position: absolute;
@@ -1761,8 +1961,8 @@ window['animStop_rec'] = function () {
 
             <!-- GALERÍA DE FOTOS -->
             <div class="gallery-card">
-                <div class="gallery-title">📸 Galería de Fotos</div>
-                <p class="gallery-subtitle">Los momentos que dejaron nuestros invitados</p>
+                <div class="gallery-title">📸 Conoce más del evento</div>
+                <p class="gallery-subtitle"><span id="galeria-count" class="gallery-count hidden"></span></p>
                 <div id="galeria-contenido" class="gallery-placeholder">
                     <span class="gallery-icon">🤍</span>
                     <p>Aquí aparecerán las fotos que se tomaron el día de la boda. ¡Vuelve pronto para revivir el momento!</p>
@@ -1801,15 +2001,20 @@ window['animStop_rec'] = function () {
     <!-- GALERÍA A PANTALLA COMPLETA (fuera del .container para que el fixed cubra toda la pantalla) -->
     <div id="galeria-fullscreen" class="gallery-fullscreen hidden">
         <div class="gallery-fs-header">
-            <h2>Nuestra Galería</h2>
+            <div>
+                <h2>Nuestra Galería</h2>
+                <span id="galeria-fs-count" class="gallery-fs-count"></span>
+            </div>
             <button class="gallery-fs-close" onclick="cerrarGaleriaCompleta()" aria-label="Cerrar galería">✕</button>
         </div>
         <div id="galeria-masonry" class="gallery-masonry"></div>
     </div>
 
     <!-- Visor ampliado de foto, con navegación -->
-    <div id="galeria-lightbox" class="gallery-lightbox hidden">
+    <div id="galeria-lightbox" class="gallery-lightbox hidden" onclick="if (event.target === this) cerrarFotoAmpliada()">
         <button class="lightbox-close" onclick="cerrarFotoAmpliada()" aria-label="Cerrar">✕</button>
+        <a id="lightbox-download" class="lightbox-download" href="#" target="_blank" rel="noopener" download aria-label="Descargar foto" title="Descargar foto" onclick="event.stopPropagation()">⬇</a>
+        <div id="lightbox-spinner" class="lightbox-spinner hidden"></div>
         <button class="lightbox-nav lightbox-prev" onclick="fotoAnterior(event)" aria-label="Anterior">‹</button>
         <img id="galeria-lightbox-img" src="" alt="Foto ampliada">
         <button class="lightbox-nav lightbox-next" onclick="fotoSiguiente(event)" aria-label="Siguiente">›</button>
@@ -1854,24 +2059,49 @@ window['animStop_rec'] = function () {
 
         let fotosGaleria = [];
         let indiceFotoActual = 0;
+        let tokenFoto = 0;
+
+        function urlSegura(url) {
+            return String(url).replace(/"/g, "&quot;");
+        }
+
+        function textoConteo(total) {
+            return total + (total === 1 ? " foto" : " fotos");
+        }
 
         function cargarGaleriaFotos() {
+            const contenedor = document.getElementById("galeria-contenido");
+            if (!contenedor) return;
+            contenedor.classList.add("is-loading");
+
             fetch(URL_APPS_SCRIPT_FOTOS)
                 .then(res => res.json())
                 .then(data => {
-                    const contenedor = document.getElementById("galeria-contenido");
-                    if (!contenedor) return;
-                    fotosGaleria = data.fotos || [];
-                    if (fotosGaleria.length === 0) return; // deja el placeholder de "🤍"
+                    fotosGaleria = (data.fotos || []).filter(f => f && f.url);
+                    const total = fotosGaleria.length;
+                    if (total === 0) return; // deja el placeholder de "🤍"
+
+                    const conteo = document.getElementById("galeria-count");
+                    if (conteo) {
+                        conteo.innerText = textoConteo(total);
+                        conteo.classList.remove("hidden");
+                    }
 
                     const preview = fotosGaleria.slice(0, 6);
-                    const restantes = fotosGaleria.length - preview.length;
+                    const restantes = total - preview.length;
+                    const claseGrid = preview.length >= 6 ? "n-mosaic"
+                        : preview.length === 1 ? "n-one"
+                        : "n-few" + (preview.length % 2 ? " odd" : "");
 
-                    let html = `<div class="gallery-preview-grid">`;
+                    let html = `<div class="gallery-preview-grid ${claseGrid}">`;
                     preview.forEach((foto, i) => {
                         const esUltimaConMas = (i === preview.length - 1 && restantes > 0);
-                        html += `<div class="preview-item" onclick="abrirGaleriaCompleta()">
-                                    <img src="${foto.url}" loading="lazy" alt="Foto de la boda">
+                        html += `<div class="preview-item" role="button" tabindex="0" aria-label="Abrir la galería"
+                                      onclick="abrirGaleriaCompleta()"
+                                      onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); abrirGaleriaCompleta(); }">
+                                    <img src="${urlSegura(foto.url)}" loading="lazy" alt="Foto de la boda"
+                                         onload="this.classList.add('loaded')"
+                                         onerror="this.parentElement.classList.add('broken')">
                                     ${esUltimaConMas ? `<div class="preview-more">+${restantes}</div>` : ""}
                                  </div>`;
                     });
@@ -1880,17 +2110,28 @@ window['animStop_rec'] = function () {
                     contenedor.innerHTML = html;
                     contenedor.classList.remove("gallery-placeholder");
                 })
-                .catch(err => console.log("No se pudo cargar la galería de fotos:", err));
+                .catch(err => console.log("No se pudo cargar la galería de fotos:", err))
+                .finally(() => contenedor.classList.remove("is-loading"));
         }
 
         function abrirGaleriaCompleta() {
             const masonry = document.getElementById("galeria-masonry");
             masonry.innerHTML = fotosGaleria.map((foto, i) => `
-                <div class="masonry-item" style="animation-delay:${Math.min(i * 0.04, 0.6)}s" onclick="abrirFotoAmpliada(${i})">
-                    <img src="${foto.url}" loading="lazy" alt="Foto de la boda">
+                <div class="masonry-item" role="button" tabindex="0" aria-label="Ampliar foto ${i + 1}"
+                     onclick="abrirFotoAmpliada(${i})"
+                     onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); abrirFotoAmpliada(${i}); }">
+                    <img src="${urlSegura(foto.url)}" loading="lazy" alt="Foto ${i + 1} de la boda"
+                         onload="this.parentElement.classList.add('loaded')"
+                         onerror="this.parentElement.classList.add('broken')">
                 </div>
             `).join("");
-            document.getElementById("galeria-fullscreen").classList.remove("hidden");
+
+            const conteoFs = document.getElementById("galeria-fs-count");
+            if (conteoFs) conteoFs.innerText = textoConteo(fotosGaleria.length);
+
+            const fs = document.getElementById("galeria-fullscreen");
+            fs.classList.remove("hidden");
+            fs.scrollTop = 0;
             document.body.style.overflow = "hidden";
         }
 
@@ -1901,16 +2142,39 @@ window['animStop_rec'] = function () {
 
         function abrirFotoAmpliada(indice) {
             indiceFotoActual = indice;
-            mostrarFotoActual();
             document.getElementById("galeria-lightbox").classList.remove("hidden");
+            mostrarFotoActual();
         }
 
         function mostrarFotoActual() {
+            const total = fotosGaleria.length;
             const foto = fotosGaleria[indiceFotoActual];
             if (!foto) return;
-            document.getElementById("galeria-lightbox-img").src = foto.url;
-            document.getElementById("lightbox-counter").innerText =
-                (indiceFotoActual + 1) + " / " + fotosGaleria.length;
+
+            const img = document.getElementById("galeria-lightbox-img");
+            const spinner = document.getElementById("lightbox-spinner");
+            const token = ++tokenFoto;
+
+            // Se muestra la foto solo cuando ya cargó (con spinner mientras tanto)
+            img.classList.remove("ready");
+            spinner.classList.remove("hidden");
+            const cargador = new Image();
+            cargador.onload = cargador.onerror = () => {
+                if (token !== tokenFoto) return; // el usuario ya pasó a otra foto
+                img.src = foto.url;
+                img.classList.add("ready");
+                spinner.classList.add("hidden");
+            };
+            cargador.src = foto.url;
+
+            document.getElementById("lightbox-counter").innerText = (indiceFotoActual + 1) + " / " + total;
+            document.getElementById("lightbox-download").href = foto.url;
+
+            // Precarga la siguiente y la anterior para que el cambio sea instantáneo
+            [(indiceFotoActual + 1) % total, (indiceFotoActual - 1 + total) % total].forEach(j => {
+                const pre = new Image();
+                pre.src = fotosGaleria[j].url;
+            });
         }
 
         function fotoSiguiente(e) {
@@ -1926,16 +2190,43 @@ window['animStop_rec'] = function () {
         }
 
         function cerrarFotoAmpliada() {
+            tokenFoto++;
             document.getElementById("galeria-lightbox").classList.add("hidden");
         }
 
         document.addEventListener("keydown", function (e) {
             const lightboxAbierto = !document.getElementById("galeria-lightbox").classList.contains("hidden");
-            if (!lightboxAbierto) return;
-            if (e.key === "ArrowRight") fotoSiguiente();
-            if (e.key === "ArrowLeft") fotoAnterior();
-            if (e.key === "Escape") cerrarFotoAmpliada();
+            const galeriaAbierta = !document.getElementById("galeria-fullscreen").classList.contains("hidden");
+            if (lightboxAbierto) {
+                if (e.key === "ArrowRight") fotoSiguiente();
+                if (e.key === "ArrowLeft") fotoAnterior();
+                if (e.key === "Escape") cerrarFotoAmpliada();
+            } else if (galeriaAbierta && e.key === "Escape") {
+                cerrarGaleriaCompleta();
+            }
         });
+
+        // Deslizar en el celular: izquierda/derecha cambia de foto, hacia abajo cierra
+        (function () {
+            const lb = document.getElementById("galeria-lightbox");
+            let x0 = null, y0 = null;
+            lb.addEventListener("touchstart", function (e) {
+                if (e.touches.length !== 1) { x0 = null; return; }
+                x0 = e.touches[0].clientX;
+                y0 = e.touches[0].clientY;
+            }, { passive: true });
+            lb.addEventListener("touchend", function (e) {
+                if (x0 === null) return;
+                const t = e.changedTouches[0];
+                const dx = t.clientX - x0, dy = t.clientY - y0;
+                x0 = null;
+                if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    if (dx < 0) fotoSiguiente(); else fotoAnterior();
+                } else if (dy > 90 && dy > Math.abs(dx) * 1.5) {
+                    cerrarFotoAmpliada();
+                }
+            }, { passive: true });
+        })();
 
         document.addEventListener("DOMContentLoaded", cargarGaleriaFotos);
 
