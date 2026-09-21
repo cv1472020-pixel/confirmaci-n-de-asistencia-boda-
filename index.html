@@ -162,9 +162,357 @@
             font-size: 0.9rem;
         }
 
+        /* FECHA DE LA BODA (badge elegante) */
+        .date-badge {
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            padding: 8px 16px 9px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(30,61,89,0.92), rgba(67,138,94,0.85));
+            border: 1px solid rgba(255,255,255,0.35);
+            box-shadow: 0 8px 22px rgba(10,24,38,0.35);
+            color: #ffffff;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .date-badge-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .date-badge-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .date-badge-date em {
+            font-style: normal;
+            color: #f4d58d;
+        }
+
         .location-info span {
             font-size: 0.78rem;
             color: #718096;
+        }
+
+        /* GALERÍA DE FOTOS — tarjeta de entrada (preview) */
+        .gallery-card {
+            background: #ffffff;
+            padding: 20px 20px 22px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            text-align: left;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(30, 61, 89, 0.04);
+        }
+
+        .gallery-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        .gallery-subtitle {
+            font-size: 0.8rem;
+            color: #8a97a3;
+            margin: 0 0 16px;
+        }
+
+        .gallery-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 26px 16px 22px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            background: var(--bg);
+            text-align: center;
+        }
+
+        .gallery-placeholder .gallery-icon {
+            font-size: 2.1rem;
+            opacity: 0.85;
+        }
+
+        .gallery-placeholder p {
+            color: var(--text);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+            max-width: 280px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .gallery-grid span {
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #eef3f8, #dfe9f4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #b7c6d6;
+        }
+
+        /* Preview: mosaico pequeño dentro de la tarjeta */
+        .gallery-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .gallery-preview-grid .preview-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .gallery-preview-grid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-preview-grid .preview-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .gallery-preview-grid .preview-more {
+            position: absolute;
+            inset: 0;
+            background: rgba(20, 25, 30, 0.55);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .btn-ver-galeria {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px 18px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-ver-galeria:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        /* ---- GALERÍA A PANTALLA COMPLETA ---- */
+        .gallery-fullscreen {
+            position: fixed;
+            inset: 0;
+            background: #0f1417;
+            z-index: 2500;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: galleryFadeIn 0.25s ease;
+        }
+
+        .gallery-fullscreen.hidden {
+            display: none;
+        }
+
+        @keyframes galleryFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .gallery-fs-header {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            background: linear-gradient(180deg, rgba(15,20,23,0.95), rgba(15,20,23,0.75));
+            backdrop-filter: blur(6px);
+        }
+
+        .gallery-fs-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #f5f1e8;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .gallery-fs-close {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #f5f1e8;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .gallery-fs-close:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .gallery-masonry {
+            column-count: 2;
+            column-gap: 10px;
+            padding: 4px 16px 40px;
+        }
+
+        @media (min-width: 480px) {
+            .gallery-masonry { column-count: 3; }
+        }
+
+        .gallery-masonry .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            animation: masonryFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes masonryFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-masonry img {
+            width: 100%;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .gallery-masonry .masonry-item:hover img {
+            transform: scale(1.04);
+        }
+
+        /* ---- LIGHTBOX con navegación ---- */
+        .gallery-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 13, 15, 0.96);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+
+        .gallery-lightbox.hidden {
+            display: none;
+        }
+
+        .gallery-lightbox img {
+            max-width: 100%;
+            max-height: 88vh;
+            border-radius: 6px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close,
+        .lightbox-nav {
+            position: absolute;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #f5f1e8;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .lightbox-close:hover,
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .lightbox-close {
+            top: 18px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .lightbox-nav {
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            font-size: 1.4rem;
+        }
+
+        .lightbox-prev { left: 14px; }
+        .lightbox-next { right: 14px; }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(245, 241, 232, 0.85);
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
         }
 
         .btn-map {
@@ -307,6 +655,22 @@
         }
 
         /* SOPORTE */
+        .made-by {
+            margin: 22px 0 0;
+            font-size: 0.62rem;
+            font-weight: 300;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #8a97a3;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        .made-by strong {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
         .reset-link {
             margin-top: 30px;
             font-size: 0.8rem;
@@ -565,24 +929,348 @@
             background: var(--primary);
             color: #fff;
         }
+
+        /* =====================================================
+           ESTRUCTURA RESPONSIVE
+           Móvil: se ve igual que antes (los contenedores nuevos no cambian nada).
+           PC (>= 1000px): diseño en dos paneles, sin espacios desperdiciados.
+           ===================================================== */
+        .side-date { display: none; }
+
+        /* Móvil: el orden original (ubicaciones → formulario → dudas → galería) */
+        .rsvp-cols { display: flex; flex-direction: column; }
+        .rsvp-col { display: contents; }
+        .rsvp-cols .location-card { order: 1; }
+        .rsvp-cols .rsvp-form { order: 2; }
+        .rsvp-cols .comment-section { order: 3; }
+        .rsvp-cols .gallery-card { order: 4; margin-bottom: 0; }
+
+        @media (min-width: 1000px) {
+            body:has(#step-rsvp:not(.hidden)) {
+                padding: 28px;
+            }
+
+            /* la fecha pasa al panel lateral */
+            body:has(#step-rsvp:not(.hidden)) .date-badge { display: none; }
+
+            body:has(#step-rsvp:not(.hidden)) .container {
+                max-width: 1200px;
+                min-height: min(780px, calc(100vh - 56px));
+                padding: 0;
+                display: grid;
+                grid-template-columns: 340px minmax(0, 1fr);
+                border-radius: 22px;
+                overflow: clip; /* clip (no hidden) para que el panel lateral pueda quedarse fijo al hacer scroll */
+                background: rgba(255, 255, 255, 0.94);
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .container::before {
+                z-index: 6;
+            }
+
+            /* ---------- PANEL LATERAL ---------- */
+            body:has(#step-rsvp:not(.hidden)) .invite-side {
+                position: relative;
+                background: #16324a;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-inner {
+                position: sticky;
+                top: 0;
+                height: min(100%, 100vh);
+                min-height: 440px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 52px 28px 28px;
+                text-align: center;
+                overflow: hidden;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .hero-photo {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                border-bottom: none;
+                box-shadow: none;
+                background-position: 42% 100%;
+                z-index: 0;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .hero-photo::after {
+                background:
+                    linear-gradient(180deg,
+                        rgba(12, 30, 48, 0.92) 0%,
+                        rgba(12, 30, 48, 0.72) 26%,
+                        rgba(12, 30, 48, 0.25) 46%,
+                        rgba(12, 30, 48, 0) 60%),
+                    linear-gradient(0deg, #16324a 0%, rgba(22, 50, 74, 0) 14%);
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .photo-frame {
+                width: 118px;
+                height: 118px;
+                margin: 0 auto 18px;
+                flex-shrink: 0;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-inner h1 {
+                position: relative;
+                z-index: 2;
+                color: #ffffff;
+                font-size: 2.9rem;
+                line-height: 1.02;
+                margin-bottom: 10px;
+                text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-inner .subtitle {
+                position: relative;
+                z-index: 2;
+                color: rgba(255, 255, 255, 0.88);
+                font-size: 0.78rem;
+                letter-spacing: 3px;
+                margin-bottom: 20px;
+                text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-date {
+                position: relative;
+                z-index: 2;
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                padding: 9px 24px 10px;
+                border-radius: 14px;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                background: rgba(255, 255, 255, 0.12);
+                -webkit-backdrop-filter: blur(4px);
+                backdrop-filter: blur(4px);
+                color: #ffffff;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-date-label {
+                font-size: 0.58rem;
+                font-weight: 500;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-date-value {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.45rem;
+                font-weight: 600;
+                letter-spacing: 0.03em;
+                white-space: nowrap;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .side-date-value em {
+                font-style: normal;
+                color: #f4d58d;
+            }
+
+            /* ---------- PANEL PRINCIPAL ---------- */
+            body:has(#step-rsvp:not(.hidden)) .invite-main {
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                padding: 44px 44px 24px;
+            }
+
+            /* Paso 2: tarjeta de invitado en una sola línea + dos columnas */
+            body:has(#step-rsvp:not(.hidden)) #step-rsvp {
+                flex: 1;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) #guestCard {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px 36px;
+                padding: 14px 22px;
+                margin-bottom: 26px;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) #guestCard p {
+                margin: 0;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .rsvp-cols {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 28px;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .rsvp-col {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 0;
+                min-width: 0;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .rsvp-cols .location-card {
+                margin-bottom: 22px;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .route-anim-wrap .anim-controls button {
+                width: auto;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .rsvp-cols .comment-section {
+                margin-top: 22px;
+            }
+
+            /* Soporte y créditos al fondo, en una franja compacta */
+            body:has(#step-rsvp:not(.hidden)) .reset-link {
+                margin-top: 32px;
+                padding-top: 16px;
+                border-top: 1px solid var(--border);
+                line-height: 1.7;
+            }
+
+            body:has(#step-rsvp:not(.hidden)) .made-by {
+                margin-top: 14px;
+            }
+
+            /* Galería a pantalla completa: más columnas en pantallas grandes */
+            body:has(#step-rsvp:not(.hidden)) .gallery-masonry {
+                column-count: 4;
+                max-width: 1500px;
+                margin: 0 auto;
+                padding: 8px 32px 48px;
+            }
+            body:has(#step-rsvp:not(.hidden)) .gallery-fs-header {
+                padding: 20px 32px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            body:has(#step-rsvp:not(.hidden)) .container {
+                max-width: 1320px;
+                grid-template-columns: 400px minmax(0, 1fr);
+            }
+            body:has(#step-rsvp:not(.hidden)) .invite-main {
+                padding: 52px 56px 26px;
+            }
+            body:has(#step-rsvp:not(.hidden)) .side-inner h1 {
+                font-size: 3.3rem;
+            }
+            body:has(#step-rsvp:not(.hidden)) .gallery-masonry {
+                column-count: 5;
+            }
+        }
 </style>
 </head>
 <body>
+<div class="date-badge">
+    <span class="date-badge-label">Nos casamos</span>
+    <span class="date-badge-date">19 <em>DIC</em> 2026</span>
+</div>
+
 
     <div class="container">
-        <div class="hero-photo" role="img" aria-label="Josué y Adriana en Antigua Guatemala"></div>
-        <div class="photo-frame" role="img" aria-label="Josué y Adriana"></div>
-        <h1>Josué & Adriana</h1>
-        <div class="subtitle">Nuestra Boda • RSVP</div>
+        <!-- PANEL LATERAL (en móvil es la cabecera; en PC es una columna fija) -->
+        <div class="invite-side">
+            <div class="side-inner">
+                <div class="hero-photo" role="img" aria-label="Josué y Adriana en Antigua Guatemala"></div>
+                <div class="photo-frame" role="img" aria-label="Josué y Adriana"></div>
+                <h1>Josué & Adriana</h1>
+                <div class="subtitle">Nuestra Boda • RSVP</div>
+                <div class="side-date">
+                    <span class="side-date-label">Nos casamos</span>
+                    <span class="side-date-value">19 <em>DIC</em> 2026</span>
+                </div>
+            </div>
+        </div>
 
-        <!-- TARJETA DE UBICACIONES -->
+        <div class="invite-main">
+
+
+        <!-- PASO 1: Ingresar Código -->
+        <div id="step-code">
+            <p>Ingresa el código de tu invitación para conocer más detalles del evento.</p>
+            <div id="error-msg" class="alert alert-error hidden"></div>
+            <div class="form-group">
+                <label for="codigoInput">Código de Invitación</label>
+                <input type="text" id="codigoInput" placeholder="Ej. tyui79">
+            </div>
+            <button onclick="validarCodigo()">Ver Invitación</button>
+        </div>
+
+        <!-- PASO 2: Confirmar Asistencia -->
+        <div id="step-rsvp" class="hidden">
+            <div id="guestCard">
+                <p><strong>Familia:</strong> <span id="nombreFamilia"></span></p>
+                <p><strong>Invitados asignados:</strong> <span id="textoPases" class="badge"></span></p>
+            </div>
+
+            <div class="rsvp-cols">
+                <div class="rsvp-col rsvp-col-form">
+                    <div class="rsvp-form">
+            <div id="success-msg" class="alert alert-success hidden">
+                ¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.
+            </div>
+            
+            <div class="form-group">
+                <label for="asistenciaSelect" id="lblAsistencia">Confirmar Asistencia</label>
+                <select id="asistenciaSelect" onchange="toggleAsistencia()">
+                    <option value="si">Sí, ahí estaremos con alegría</option>
+                    <option value="no">No podremos asistir</option>
+                </select>
+            </div>
+
+            <!-- SECCIÓN SI ASISTEN -->
+            <div id="group-si" class="form-group">
+                <label for="adultosConfirmados">Adultos que asistirán</label>
+                <select id="adultosConfirmados">
+                    <!-- Se llena dinámicamente -->
+                </select>
+            </div>
+
+            <div id="group-ninos" class="form-group hidden">
+                <label for="ninosConfirmados">Niños que asistirán</label>
+                <select id="ninosConfirmados">
+                    <!-- Se llena dinámicamente -->
+                </select>
+            </div>
+
+            <!-- SECCIÓN SI NO ASISTEN -->
+            <div id="group-no" class="hidden">
+                <div class="alert alert-warning">
+                    <p style="margin-bottom: 10px;"><strong>¡Qué pena que no nos puedan acompañar!</strong> Les mandamos un abrazo gigante y lamentamos mucho que no estén con nosotros en este día tan especial.</p>
+                    <hr style="border: none; border-top: 1px solid #feebc8; margin: 10px 0;">
+                    <p style="margin-bottom: 0; font-size: 0.9rem;">⚠️ <strong>Nota importante sobre el presupuesto:</strong> Te recordamos que tu respuesta es tomada estrictamente en cuenta para el presupuesto de la boda y el contrato del banquete. Por lo tanto, al marcar "No", tu asistencia no será considerada en el evento, lo que significa que <strong>si no van, no hay comida ni lugar reservado</strong> para ustedes de última hora. ¡Agradecemos mucho tu comprensión!</p>
+                </div>
+            </div>
+
+            <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
+                    </div>
+
+            <!-- PANEL DE DUDAS SOBRE EL EVENTO -->
+            <div id="comment-section" class="comment-section hidden">
+                <div class="comment-title">❓ ¿Alguna duda?</div>
+                <p class="comment-subtitle">Alguna duda sobre el evento, háganoslo saber para analizar la situación y poder resolverla.</p>
+                <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu duda..." oninput="limitarPalabras(this)"></textarea>
+                <div id="wordCounter" class="word-counter">0/40 palabras</div>
+                <button id="btnComentario" class="btn-comment" onclick="enviarComentario()">Enviar duda</button>
+                <div id="comentario-success" class="comment-success hidden">¡Gracias por escribirnos! Vamos a revisar tu duda y te responderemos lo más pronto posible. 🙏</div>
+            </div>
+                </div>
+
+                <div class="rsvp-col rsvp-col-info">
+        <!-- TARJETA DE UBICACIONES (con recorridos animados) -->
         <div class="location-card">
-            <div class="location-title">📍 Ubicaciones del Evento</div>
+            <div class="location-title">🎬 Recorridos Animados</div>
             
             <div class="location-item">
                 <div class="location-info">
                     <strong>Ceremonia</strong>
-                    <span>Toca el botón para ver el recorrido</span>
+                    <span>Parroquia Inmaculada Concepción, San Andrés Villa Seca, Retalhuleu</span>
                 </div>
             </div>
             <div style="text-align:center; margin: -6px 0 6px;">
@@ -827,7 +1515,7 @@ window['animStop_cer'] = function () {
             <div class="location-item">
                 <div class="location-info">
                     <strong>Recepción</strong>
-                    <span>Toca el botón para ver el recorrido</span>
+                    <span>Restaurante Olas del Mar, Tulate, San Andrés Villa Seca, Retalhuleu</span>
                 </div>
             </div>
             <div style="text-align:center; margin: -6px 0 6px;">
@@ -1071,70 +1759,22 @@ window['animStop_rec'] = function () {
 
         </div>
 
-        <!-- PASO 1: Ingresar Código -->
-        <div id="step-code">
-            <p>Por favor, introduce el código personal que aparece en tu invitación para confirmar tu asistencia.</p>
-            <div id="error-msg" class="alert alert-error hidden"></div>
-            <div class="form-group">
-                <label for="codigoInput">Código de Invitación</label>
-                <input type="text" id="codigoInput" placeholder="Ej. tyui79">
-            </div>
-            <button onclick="validarCodigo()">Ver Invitación</button>
-        </div>
-
-        <!-- PASO 2: Confirmar Asistencia -->
-        <div id="step-rsvp" class="hidden">
-            <div id="guestCard">
-                <p><strong>Familia:</strong> <span id="nombreFamilia"></span></p>
-                <p><strong>Invitados asignados:</strong> <span id="textoPases" class="badge"></span></p>
-            </div>
-
-            <div id="success-msg" class="alert alert-success hidden">
-                ¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.
-            </div>
-            
-            <div class="form-group">
-                <label for="asistenciaSelect" id="lblAsistencia">Confirmar Asistencia</label>
-                <select id="asistenciaSelect" onchange="toggleAsistencia()">
-                    <option value="si">Sí, ahí estaremos con alegría</option>
-                    <option value="no">No podremos asistir</option>
-                </select>
-            </div>
-
-            <!-- SECCIÓN SI ASISTEN -->
-            <div id="group-si" class="form-group">
-                <label for="adultosConfirmados">Adultos que asistirán</label>
-                <select id="adultosConfirmados">
-                    <!-- Se llena dinámicamente -->
-                </select>
-            </div>
-
-            <div id="group-ninos" class="form-group hidden">
-                <label for="ninosConfirmados">Niños que asistirán</label>
-                <select id="ninosConfirmados">
-                    <!-- Se llena dinámicamente -->
-                </select>
-            </div>
-
-            <!-- SECCIÓN SI NO ASISTEN -->
-            <div id="group-no" class="hidden">
-                <div class="alert alert-warning">
-                    <p style="margin-bottom: 10px;"><strong>¡Qué pena que no nos puedan acompañar!</strong> Les mandamos un abrazo gigante y lamentamos mucho que no estén con nosotros en este día tan especial.</p>
-                    <hr style="border: none; border-top: 1px solid #feebc8; margin: 10px 0;">
-                    <p style="margin-bottom: 0; font-size: 0.9rem;">⚠️ <strong>Nota importante sobre el presupuesto:</strong> Te recordamos que tu respuesta es tomada estrictamente en cuenta para el presupuesto de la boda y el contrato del banquete. Por lo tanto, al marcar "No", tu asistencia no será considerada en el evento, lo que significa que <strong>si no van, no hay comida ni lugar reservado</strong> para ustedes de última hora. ¡Agradecemos mucho tu comprensión!</p>
+            <!-- GALERÍA DE FOTOS -->
+            <div class="gallery-card">
+                <div class="gallery-title">📸 Galería de Fotos</div>
+                <p class="gallery-subtitle">Los momentos que dejaron nuestros invitados</p>
+                <div id="galeria-contenido" class="gallery-placeholder">
+                    <span class="gallery-icon">🤍</span>
+                    <p>Aquí aparecerán las fotos que se tomaron el día de la boda. ¡Vuelve pronto para revivir el momento!</p>
+                    <div class="gallery-grid">
+                        <span>📷</span>
+                        <span>📷</span>
+                        <span>📷</span>
+                        <span>📷</span>
+                    </div>
                 </div>
             </div>
-
-            <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
-
-            <!-- PANEL DE DUDAS SOBRE EL EVENTO -->
-            <div id="comment-section" class="comment-section hidden">
-                <div class="comment-title">❓ ¿Alguna duda?</div>
-                <p class="comment-subtitle">Alguna duda sobre el evento, háganoslo saber para analizar la situación y poder resolverla.</p>
-                <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu duda..." oninput="limitarPalabras(this)"></textarea>
-                <div id="wordCounter" class="word-counter">0/40 palabras</div>
-                <button id="btnComentario" class="btn-comment" onclick="enviarComentario()">Enviar duda</button>
-                <div id="comentario-success" class="comment-success hidden">¡Gracias por escribirnos! Vamos a revisar tu duda y te responderemos lo más pronto posible. 🙏</div>
+                </div>
             </div>
         </div>
 
@@ -1153,6 +1793,27 @@ window['animStop_rec'] = function () {
                 <a href="#" onclick="localStorage.clear(); alert('Se ha restablecido la memoria del dispositivo. Ya puedes reintentar.'); location.reload();">Restablecer formulario en este dispositivo</a>
             </div>
         </div>
+
+        <p class="made-by">Hecho por <strong>QuetzalCode</strong></p>
+        </div>
+    </div>
+
+    <!-- GALERÍA A PANTALLA COMPLETA (fuera del .container para que el fixed cubra toda la pantalla) -->
+    <div id="galeria-fullscreen" class="gallery-fullscreen hidden">
+        <div class="gallery-fs-header">
+            <h2>Nuestra Galería</h2>
+            <button class="gallery-fs-close" onclick="cerrarGaleriaCompleta()" aria-label="Cerrar galería">✕</button>
+        </div>
+        <div id="galeria-masonry" class="gallery-masonry"></div>
+    </div>
+
+    <!-- Visor ampliado de foto, con navegación -->
+    <div id="galeria-lightbox" class="gallery-lightbox hidden">
+        <button class="lightbox-close" onclick="cerrarFotoAmpliada()" aria-label="Cerrar">✕</button>
+        <button class="lightbox-nav lightbox-prev" onclick="fotoAnterior(event)" aria-label="Anterior">‹</button>
+        <img id="galeria-lightbox-img" src="" alt="Foto ampliada">
+        <button class="lightbox-nav lightbox-next" onclick="fotoSiguiente(event)" aria-label="Siguiente">›</button>
+        <div id="lightbox-counter" class="lightbox-counter"></div>
     </div>
 
     <div id="scrollHint" class="scroll-hint">
@@ -1185,6 +1846,99 @@ window['animStop_rec'] = function () {
         // Enlace real de tu Apps Script configurado:
         const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxUjRIi8fdvuFgzvGe08WROaAka_qfA-_WuEldzsBnVeJq2eykr6ewV1KEDJpHE8m0B/exec";
 
+        // ---- GALERÍA DE FOTOS (carpeta de Google Drive) ----
+        // Este es un Apps Script APARTE del RSVP, vinculado a otra hoja.
+        // Reemplazá esta URL por la que te da Google al implementar
+        // ese script (ver apps_script_fotos.gs).
+        const URL_APPS_SCRIPT_FOTOS = "https://script.google.com/macros/s/AKfycbzZXN7zq4dsy7kTUv_bVks3skf1HUfDkh06f7QKba9t1abg_1MdN5srvHGNpX9qZzRT/exec";
+
+        let fotosGaleria = [];
+        let indiceFotoActual = 0;
+
+        function cargarGaleriaFotos() {
+            fetch(URL_APPS_SCRIPT_FOTOS)
+                .then(res => res.json())
+                .then(data => {
+                    const contenedor = document.getElementById("galeria-contenido");
+                    if (!contenedor) return;
+                    fotosGaleria = data.fotos || [];
+                    if (fotosGaleria.length === 0) return; // deja el placeholder de "🤍"
+
+                    const preview = fotosGaleria.slice(0, 6);
+                    const restantes = fotosGaleria.length - preview.length;
+
+                    let html = `<div class="gallery-preview-grid">`;
+                    preview.forEach((foto, i) => {
+                        const esUltimaConMas = (i === preview.length - 1 && restantes > 0);
+                        html += `<div class="preview-item" onclick="abrirGaleriaCompleta()">
+                                    <img src="${foto.url}" loading="lazy" alt="Foto de la boda">
+                                    ${esUltimaConMas ? `<div class="preview-more">+${restantes}</div>` : ""}
+                                 </div>`;
+                    });
+                    html += `</div>`;
+                    html += `<button class="btn-ver-galeria" onclick="abrirGaleriaCompleta()">🤍 Ver galería completa</button>`;
+                    contenedor.innerHTML = html;
+                    contenedor.classList.remove("gallery-placeholder");
+                })
+                .catch(err => console.log("No se pudo cargar la galería de fotos:", err));
+        }
+
+        function abrirGaleriaCompleta() {
+            const masonry = document.getElementById("galeria-masonry");
+            masonry.innerHTML = fotosGaleria.map((foto, i) => `
+                <div class="masonry-item" style="animation-delay:${Math.min(i * 0.04, 0.6)}s" onclick="abrirFotoAmpliada(${i})">
+                    <img src="${foto.url}" loading="lazy" alt="Foto de la boda">
+                </div>
+            `).join("");
+            document.getElementById("galeria-fullscreen").classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        function cerrarGaleriaCompleta() {
+            document.getElementById("galeria-fullscreen").classList.add("hidden");
+            document.body.style.overflow = "";
+        }
+
+        function abrirFotoAmpliada(indice) {
+            indiceFotoActual = indice;
+            mostrarFotoActual();
+            document.getElementById("galeria-lightbox").classList.remove("hidden");
+        }
+
+        function mostrarFotoActual() {
+            const foto = fotosGaleria[indiceFotoActual];
+            if (!foto) return;
+            document.getElementById("galeria-lightbox-img").src = foto.url;
+            document.getElementById("lightbox-counter").innerText =
+                (indiceFotoActual + 1) + " / " + fotosGaleria.length;
+        }
+
+        function fotoSiguiente(e) {
+            if (e) e.stopPropagation();
+            indiceFotoActual = (indiceFotoActual + 1) % fotosGaleria.length;
+            mostrarFotoActual();
+        }
+
+        function fotoAnterior(e) {
+            if (e) e.stopPropagation();
+            indiceFotoActual = (indiceFotoActual - 1 + fotosGaleria.length) % fotosGaleria.length;
+            mostrarFotoActual();
+        }
+
+        function cerrarFotoAmpliada() {
+            document.getElementById("galeria-lightbox").classList.add("hidden");
+        }
+
+        document.addEventListener("keydown", function (e) {
+            const lightboxAbierto = !document.getElementById("galeria-lightbox").classList.contains("hidden");
+            if (!lightboxAbierto) return;
+            if (e.key === "ArrowRight") fotoSiguiente();
+            if (e.key === "ArrowLeft") fotoAnterior();
+            if (e.key === "Escape") cerrarFotoAmpliada();
+        });
+
+        document.addEventListener("DOMContentLoaded", cargarGaleriaFotos);
+
         let codigoActual = "";
         let datosActuales = null;
 
@@ -1194,12 +1948,6 @@ window['animStop_rec'] = function () {
 
             if (!input) {
                 errorDiv.innerText = "Por favor, ingresa tu código.";
-                errorDiv.classList.remove("hidden");
-                return;
-            }
-
-            if (localStorage.getItem("rsvp_" + input)) {
-                errorDiv.innerHTML = '⚠️ Este código ya ha sido utilizado en este dispositivo. Si te equivocaste, <a href="https://wa.me/50242083365?text=Hola,%20deseo%20corregir%20mi%20respuesta%20para%20el%20codigo%20' + input + '" target="_blank">contáctanos por WhatsApp</a> para corregirlo.';
                 errorDiv.classList.remove("hidden");
                 return;
             }
@@ -1228,12 +1976,6 @@ window['animStop_rec'] = function () {
                             const estatus = (row[3] && row[3].v !== null) ? row[3].v.toString().trim() : "";
                             const cuotaRaw = (row[4] && row[4].v !== null) ? row[4].v.toString() : "1|0";
 
-                            if (estatus !== "") {
-                                errorDiv.innerHTML = '⚠️ Este código ya registró una respuesta previamente. Si deseas modificarla, por favor <a href="https://wa.me/50242083365?text=Hola,%20deseo%20cambiar%20mi%20respuesta%20del%20codigo%20' + input + '" target="_blank">escríbenos a WhatsApp</a>.';
-                                errorDiv.classList.remove("hidden");
-                                return;
-                            }
-
                             let adultos = 1;
                             let ninos = 0;
                             if (cuotaRaw.includes("|")) {
@@ -1255,35 +1997,58 @@ window['animStop_rec'] = function () {
                             }
                             document.getElementById("textoPases").innerText = textoPasesStr;
 
-                            const totalPersonas = adultos + ninos;
+                            if (estatus !== "") {
+                                // Este código ya envió su confirmación antes: se muestra la
+                                // invitación en modo solo lectura (sin permitir reenviar el RSVP),
+                                // pero el código sigue pudiendo consultarse las veces que haga falta.
+                                document.getElementById("lblAsistencia").closest(".form-group").classList.add("hidden");
+                                document.getElementById("group-si").classList.add("hidden");
+                                document.getElementById("group-ninos").classList.add("hidden");
+                                document.getElementById("group-no").classList.add("hidden");
+                                document.getElementById("btnEnviar").style.display = "none";
+                                document.getElementById("success-msg").classList.remove("hidden");
+                            } else {
+                                document.getElementById("lblAsistencia").closest(".form-group").classList.remove("hidden");
+                                document.getElementById("btnEnviar").style.display = "";
+                                document.getElementById("btnEnviar").disabled = false;
+                                document.getElementById("btnEnviar").innerText = "Enviar Respuesta";
+                                document.getElementById("success-msg").classList.add("hidden");
+                                document.getElementById("asistenciaSelect").disabled = false;
 
-                            const selectAdultos = document.getElementById("adultosConfirmados");
-                            selectAdultos.innerHTML = "";
-                            for (let a = adultos; a >= 0; a--) {
-                                let option = document.createElement("option");
-                                option.value = a;
-                                option.text = a + (a === 1 ? " adulto" : " adultos");
-                                selectAdultos.appendChild(option);
-                            }
-
-                            const grupoNinos = document.getElementById("group-ninos");
-                            const selectNinos = document.getElementById("ninosConfirmados");
-                            selectNinos.innerHTML = "";
-                            if (ninos > 0) {
-                                grupoNinos.classList.remove("hidden");
-                                for (let n = ninos; n >= 0; n--) {
+                                const selectAdultos = document.getElementById("adultosConfirmados");
+                                selectAdultos.innerHTML = "";
+                                selectAdultos.disabled = false;
+                                for (let a = adultos; a >= 0; a--) {
                                     let option = document.createElement("option");
-                                    option.value = n;
-                                    option.text = n + (n === 1 ? " niño" : " niños");
+                                    option.value = a;
+                                    option.text = a + (a === 1 ? " adulto" : " adultos");
+                                    selectAdultos.appendChild(option);
+                                }
+
+                                const grupoNinos = document.getElementById("group-ninos");
+                                const selectNinos = document.getElementById("ninosConfirmados");
+                                selectNinos.innerHTML = "";
+                                selectNinos.disabled = false;
+                                if (ninos > 0) {
+                                    grupoNinos.classList.remove("hidden");
+                                    for (let n = ninos; n >= 0; n--) {
+                                        let option = document.createElement("option");
+                                        option.value = n;
+                                        option.text = n + (n === 1 ? " niño" : " niños");
+                                        selectNinos.appendChild(option);
+                                    }
+                                } else {
+                                    grupoNinos.classList.add("hidden");
+                                    let option = document.createElement("option");
+                                    option.value = 0;
+                                    option.text = "0 niños";
                                     selectNinos.appendChild(option);
                                 }
-                            } else {
-                                grupoNinos.classList.add("hidden");
-                                let option = document.createElement("option");
-                                option.value = 0;
-                                option.text = "0 niños";
-                                selectNinos.appendChild(option);
+
+                                toggleAsistencia();
                             }
+
+                            mostrarEstadoDuda(input);
 
                             document.getElementById("step-code").classList.add("hidden");
                             document.getElementById("step-rsvp").classList.remove("hidden");
@@ -1338,6 +2103,11 @@ window['animStop_rec'] = function () {
         }
 
         function enviarRSVP() {
+            if (localStorage.getItem("rsvp_" + codigoActual)) {
+                alert("Ya enviaste tu confirmación con este código. Si necesitas corregirla, contáctanos por WhatsApp.");
+                return;
+            }
+
             const asistencia = document.getElementById("asistenciaSelect").value;
             const adultosConfirmados = asistencia === "si" ? parseInt(document.getElementById("adultosConfirmados").value) : 0;
             const ninosConfirmados = asistencia === "si" ? parseInt(document.getElementById("ninosConfirmados").value) : 0;
@@ -1381,6 +2151,29 @@ window['animStop_rec'] = function () {
             });
         }
 
+        function mostrarEstadoDuda(codigo) {
+            const yaEnvioDuda = localStorage.getItem("duda_" + codigo);
+            const textarea = document.getElementById("comentarioInput");
+            const btnCom = document.getElementById("btnComentario");
+            const successCom = document.getElementById("comentario-success");
+            const counter = document.getElementById("wordCounter");
+
+            if (yaEnvioDuda) {
+                textarea.value = "";
+                textarea.disabled = true;
+                btnCom.style.display = "none";
+                if (counter) counter.classList.add("hidden");
+                successCom.classList.remove("hidden");
+            } else {
+                textarea.disabled = false;
+                btnCom.style.display = "";
+                btnCom.innerText = "Enviar duda";
+                btnCom.disabled = false;
+                successCom.classList.add("hidden");
+                if (counter) counter.classList.remove("hidden");
+            }
+        }
+
         function limitarPalabras(textarea) {
             const counter = document.getElementById("wordCounter");
             let palabras = textarea.value.trim().length ? textarea.value.trim().split(/\s+/) : [];
@@ -1399,6 +2192,11 @@ window['animStop_rec'] = function () {
             let comentario = textarea.value.trim();
             const btnCom = document.getElementById("btnComentario");
             const successCom = document.getElementById("comentario-success");
+
+            if (localStorage.getItem("duda_" + codigoActual)) {
+                alert("Ya enviaste una duda con este código.");
+                return;
+            }
 
             if (!comentario) {
                 alert("Escribe tu duda antes de enviarla ❓");
@@ -1424,6 +2222,7 @@ window['animStop_rec'] = function () {
                 body: formData
             })
             .then(() => {
+                localStorage.setItem("duda_" + codigoActual, "true");
                 textarea.disabled = true;
                 btnCom.style.display = "none";
                 successCom.classList.remove("hidden");
@@ -1485,6 +2284,6 @@ window['animStop_rec'] = function () {
             });
         })();
     </script>
-    <div style="position:fixed; bottom:4px; left:6px; font-size:10px; color:rgba(255,255,255,0.55); z-index:1000; pointer-events:none; font-family: monospace;">v2.3-panel-dudas</div>
+    <div style="position:fixed; bottom:4px; left:6px; font-size:10px; color:rgba(255,255,255,0.55); z-index:1000; pointer-events:none; font-family: monospace;">v2.4-codigo-reutilizable</div>
 </body>
 </html>
