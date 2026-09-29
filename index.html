@@ -1326,8 +1326,8 @@
             }
 
             body:has(#step-rsvp:not(.hidden)) .rsvp-cols .stay-card {
-                order: 5;
-                margin: 22px 0 0;
+                order: 1;
+                margin: 0 0 22px;
             }
 
             /* Soporte y créditos al fondo, en una franja compacta */
@@ -1396,7 +1396,7 @@
         }
         .btn-stay {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%; padding: 12px 18px; background: var(--accent); color: #fff;
+            width: 100%; padding: 12px 18px; background: linear-gradient(135deg, #5a8fbd 0%, #3b6d9c 100%); color: #fff;
             border: none; border-radius: 30px; cursor: pointer;
             font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600;
             transition: opacity .2s ease, transform .2s ease;
@@ -1506,7 +1506,6 @@
         /* =====================================================
            CONFIRMAR ASISTENCIA: tarjeta destacada y fácil de encontrar
            ===================================================== */
-        .rsvp-cols .rsvp-form { order: -1; }
 
         .rsvp-form {
             position: relative;
@@ -1517,7 +1516,7 @@
             margin-bottom: 26px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(90, 143, 189, 0.28);
-            animation: rsvpGlow 2s ease-in-out infinite;
+            animation: rsvpGlow 2s ease-in-out 3;
             scroll-margin-top: 16px;
         }
         .rsvp-form:focus-within { animation: none; }
@@ -1574,7 +1573,6 @@
             padding: 18px 25px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(59, 109, 156, 0.4);
-            animation: btnPulse 1.6s ease-in-out infinite;
         }
         .rsvp-form #btnEnviar:hover { background: #3b6d9c; }
         .rsvp-form #btnEnviar:disabled { animation: none; opacity: 0.7; }
@@ -1587,7 +1585,7 @@
         .rsvp-fab {
             position: fixed;
             left: 50%;
-            bottom: 18px;
+            bottom: 74px;
             transform: translateX(-50%);
             width: auto;
             max-width: 92%;
@@ -1605,7 +1603,6 @@
             border: 3px solid #ffffff;
             box-shadow: 0 10px 28px rgba(10, 24, 38, 0.4);
             z-index: 1001;
-            animation: fabBounce 1.6s ease-in-out infinite;
         }
         .rsvp-fab:hover { background: #3b6d9c; }
         .rsvp-fab.hidden { display: none !important; }
@@ -1617,6 +1614,89 @@
         @media (prefers-reduced-motion: reduce) {
             .rsvp-form, .rsvp-form #btnEnviar, .rsvp-fab { animation: none !important; }
         }
+
+        /* AVISO DE PLAYA: pequeño y amigable */
+        .beach-warning {
+            order: 5;
+            margin: 0 0 26px;
+            padding: 10px 13px 11px;
+            background: #fffaf0;
+            border: 1px dashed #f0cf95;
+            border-radius: 12px;
+            text-align: left;
+            color: #7a5a2b;
+        }
+        .beach-warning-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.1;
+            color: #8a5a12;
+            margin-bottom: 5px;
+        }
+        .beach-warning p { font-size: 0.74rem; line-height: 1.4; margin: 0 0 4px; }
+        .beach-warning p:last-child { margin-bottom: 0; }
+        .beach-warning strong { color: #8a5a12; font-weight: 500; }
+
+        /* INVITACIÓN A BAJAR HASTA EL FINAL */
+        .scroll-invite {
+            text-align: center;
+            margin: -6px 0 22px;
+            padding: 12px 14px 8px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: var(--primary);
+            background: linear-gradient(180deg, #eef5fb 0%, #ffffff 100%);
+            border-radius: 14px;
+        }
+        .scroll-invite b { font-weight: 500; }
+        .scroll-invite .scroll-invite-arrow {
+            display: block;
+            font-size: 1.6rem;
+            line-height: 1;
+            color: #5a8fbd;
+        }
+        #scrollProgress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 5px;
+            width: 0;
+            background: linear-gradient(90deg, #9cc4e4, #5a8fbd, #3b6d9c);
+            border-radius: 0 4px 4px 0;
+            z-index: 1002;
+            opacity: 0;
+            transition: width 0.15s linear, opacity 0.3s;
+            pointer-events: none;
+        }
+        body:has(#step-rsvp:not(.hidden)) #scrollProgress { opacity: 1; }
+
+        /* Móvil: el aviso queda al final, la galería ya no es la última tarjeta */
+        @media (max-width: 999px) {
+            .rsvp-cols .gallery-card { margin-bottom: 25px; }
+            .beach-warning { margin-bottom: 0; }
+        }
+        /* PC: el aviso va justo debajo del formulario; la invitación a bajar no hace falta */
+        @media (min-width: 1000px) {
+            .beach-warning { order: 2; }
+            .scroll-invite { display: none; }
+        }
+
+        /* CRÉDITO: visible pero discreto, antes de la sección de soporte */
+        .made-by {
+            display: table;
+            margin: 6px auto 0;
+            padding: 7px 16px;
+            background: #eef5fb;
+            border: 1px solid #d0e1fd;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            text-transform: none;
+            color: #4f6f8f;
+            opacity: 1;
+        }
+        .made-by strong { color: #3b6d9c; }
     </style>
 </head>
 <body>
@@ -1662,12 +1742,17 @@
                 <p><strong>Invitados asignados:</strong> <span id="textoPases" class="badge"></span></p>
             </div>
 
+            <div class="scroll-invite">
+                <b>¡Baja hasta el final!</b><br>Te mostramos cómo llegar, dónde hospedarte, tu confirmación y fotos del evento.
+                <span class="scroll-invite-arrow">⌄</span>
+            </div>
+
             <div class="rsvp-cols">
                 <div class="rsvp-col rsvp-col-form">
                     <div class="rsvp-form" id="rsvpForm">
             <div class="rsvp-cta-head">
-                <span class="rsvp-cta-tag">👇 Paso importante</span>
-                <h2 class="rsvp-cta-title">✅ Confirma tu asistencia</h2>
+                <span class="rsvp-cta-tag">Paso importante</span>
+                <h2 class="rsvp-cta-title">Confirma tu asistencia</h2>
                 <p class="rsvp-cta-sub">Elige una opción y toca el botón azul de abajo.</p>
             </div>
             <div id="success-msg" class="alert alert-success hidden">
@@ -1709,9 +1794,17 @@
             <button id="btnEnviar" onclick="enviarRSVP()">Enviar Respuesta</button>
                     </div>
 
+            <!-- AVISO DE PLAYA -->
+            <div class="beach-warning" role="note">
+                <div class="beach-warning-title">🌊 Cuidado con el mar</div>
+                <p>La recepción será en la playa y todos los invitados, si lo desean, pueden hacer uso de ella. Solo les pedimos mucho cuidado.</p>
+                <p><strong>Si has tomado alcohol o no conoces la zona, por favor no te metas al mar solo.</strong> La corriente puede ser fuerte y arrastrar incluso a quien sabe nadar. Ve siempre acompañado y, si vienes con niños, no los pierdas de vista.</p>
+                <p>Queremos que todos la pasemos increíble y que regresen a casa sanos y salvos. 💙</p>
+            </div>
+
             <!-- PANEL DE DUDAS SOBRE EL EVENTO -->
             <div id="comment-section" class="comment-section hidden">
-                <div class="comment-title">❓ ¿Alguna duda?</div>
+                <div class="comment-title">¿Alguna duda?</div>
                 <p class="comment-subtitle">Alguna duda sobre el evento, háganoslo saber para analizar la situación y poder resolverla.</p>
                 <textarea id="comentarioInput" class="comment-textarea" maxlength="300" placeholder="Escribe aquí tu duda..." oninput="limitarPalabras(this)"></textarea>
                 <div id="wordCounter" class="word-counter">0/40 palabras</div>
@@ -1719,19 +1812,12 @@
                 <div id="comentario-success" class="comment-success hidden">¡Gracias por escribirnos! Vamos a revisar tu duda y te responderemos lo más pronto posible. 🙏</div>
             </div>
 
-            <!-- HOSPEDAJE Y SERVICIOS EN TULATE -->
-            <div class="stay-card">
-                <div class="stay-title">🏨 ¿Vienes de lejos?</div>
-                <p>¿Vienes de lejos y no tienes dónde quedarte? Te dejamos opciones cercanas al lugar de la recepción donde puedes hospedarte, además de restaurantes, transporte y otros servicios en Tulate.</p>
-                <div class="stay-stats"><span>🛏️ 7 opciones de hospedaje</span><span>🍽️ 12 restaurantes</span><span>⛽ + servicios</span></div>
-                <button type="button" class="btn-stay" onclick="abrirGuiaTulate()">🌴 Ver hospedaje y servicios</button>
-            </div>
                 </div>
 
                 <div class="rsvp-col rsvp-col-info">
         <!-- TARJETA DE UBICACIONES (con recorridos animados) -->
         <div class="location-card">
-            <div class="location-title">🎬 Recorridos Animados</div>
+            <div class="location-title">Recorridos Animados</div>
             
             <div class="location-item">
                 <div class="location-info">
@@ -2226,9 +2312,17 @@ window['animStop_rec'] = function () {
         </div>
 
 
+            <!-- HOSPEDAJE Y SERVICIOS EN TULATE -->
+            <div class="stay-card">
+                <div class="stay-title">¿Vienes de lejos?</div>
+                <p>¿Vienes de lejos y no tienes dónde quedarte? Te dejamos opciones cercanas al lugar de la recepción donde puedes hospedarte, además de restaurantes, transporte y otros servicios en Tulate.</p>
+                <div class="stay-stats"><span>7 opciones de hospedaje</span><span>12 restaurantes</span><span>+ servicios</span></div>
+                <button type="button" class="btn-stay" onclick="abrirGuiaTulate()">Ver hospedaje y servicios</button>
+            </div>
+
             <!-- GALERÍA DE FOTOS -->
             <div class="gallery-card">
-                <div class="gallery-title">📸 Conoce más del evento</div>
+                <div class="gallery-title">Conoce más del evento</div>
                 <p class="gallery-subtitle"><span id="galeria-count" class="gallery-count hidden"></span></p>
                 <div id="galeria-contenido" class="gallery-placeholder">
                     <span class="gallery-icon">🤍</span>
@@ -2244,6 +2338,8 @@ window['animStop_rec'] = function () {
                 </div>
             </div>
         </div>
+
+        <p class="made-by">Hecho por <strong>QuetzalCode</strong></p>
 
         <!-- SECCIÓN DE SOPORTE -->
         <div class="reset-link">
@@ -2261,7 +2357,6 @@ window['animStop_rec'] = function () {
             </div>
         </div>
 
-        <p class="made-by">Hecho por <strong>QuetzalCode</strong></p>
         </div>
     </div>
 
@@ -2822,7 +2917,7 @@ window['animStop_rec'] = function () {
             let hideTimeout = null;
 
             function isAtBottom() {
-                return (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 40);
+                return (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 320);
             }
 
             function pulseHint() {
@@ -2839,12 +2934,16 @@ window['animStop_rec'] = function () {
                 const rsvpVisible = stepRsvp && !stepRsvp.classList.contains("hidden");
                 const alreadySent = successMsg && !successMsg.classList.contains("hidden");
 
-                if (alreadySent) return; // ya confirmó, no molestar más
-
                 if (codeVisible) {
                     hintText.innerText = "Desliza para escribir tu código";
                 } else if (rsvpVisible) {
-                    hintText.innerText = "Desliza para confirmar si asistes";
+                    if (alreadySent) {
+                        hintText.innerText = "Sigue bajando: aún hay más por ver";
+                    } else if (window.scrollY < 200) {
+                        hintText.innerText = "Baja para ver toda la invitación";
+                    } else {
+                        hintText.innerText = "Sigue bajando, ¡ya casi llegas!";
+                    }
                 } else {
                     return;
                 }
@@ -3034,7 +3133,8 @@ window['animStop_rec'] = function () {
     </script>
     <div style="position:fixed; bottom:4px; left:6px; font-size:10px; color:rgba(255,255,255,0.55); z-index:1000; pointer-events:none; font-family: monospace;">v2.4-codigo-reutilizable</div>
 
-<button type="button" id="rsvpFab" class="rsvp-fab hidden" aria-label="Ir a confirmar asistencia">👆 Confirmar mi asistencia</button>
+<div id="scrollProgress"></div>
+<button type="button" id="rsvpFab" class="rsvp-fab hidden" aria-label="Ir a confirmar asistencia">↑ Confirmar mi asistencia</button>
 <script>
 (function () {
     var fab = document.getElementById("rsvpFab");
@@ -3048,10 +3148,13 @@ window['animStop_rec'] = function () {
         var done = ok && !ok.classList.contains("hidden");
         var overlay = document.querySelector(".guia-overlay:not(.hidden), .gallery-fullscreen:not(.hidden)");
         var r = form.getBoundingClientRect();
-        var inView = r.top < window.innerHeight * 0.75 && r.bottom > window.innerHeight * 0.25;
-        var show = visibleStep && !done && !overlay && !inView;
+        // Solo aparece si la persona ya pasó de largo el formulario sin confirmar
+        var passed = r.bottom < 0;
+        var nearBottom = window.matchMedia("(min-width: 1000px)").matches &&
+                         (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 320);
+        var show = visibleStep && !done && !overlay && passed && !nearBottom;
         fab.classList.toggle("hidden", !show);
-        if (show) fab.textContent = (r.top < 0) ? "👆 Confirmar mi asistencia" : "👇 Confirmar mi asistencia";
+        fab.textContent = "↑ Confirmar mi asistencia";
     }
     fab.addEventListener("click", function () {
         form.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -3060,6 +3163,14 @@ window['animStop_rec'] = function () {
             if (sel && !sel.disabled) sel.focus({ preventScroll: true });
         }, 600);
     });
+    var bar = document.getElementById("scrollProgress");
+    function progress() {
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if (bar && max > 0) bar.style.width = Math.min(100, (window.scrollY / max) * 100) + "%";
+    }
+    window.addEventListener("scroll", progress, { passive: true });
+    window.addEventListener("resize", progress);
+    progress();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
     new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ["class", "style"], subtree: true });
