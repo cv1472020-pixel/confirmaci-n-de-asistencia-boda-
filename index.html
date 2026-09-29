@@ -1502,6 +1502,121 @@
         .guia-lb .lb-n { right: 10px; top: 50%; transform: translateY(-50%); }
         .guia-lb .lb-c { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.8); font-size: .78rem; }
         .guia-foot { margin-top: 22px; text-align: center; font-size: .72rem; color: #8a97a3; }
+
+        /* =====================================================
+           CONFIRMAR ASISTENCIA: tarjeta destacada y fácil de encontrar
+           ===================================================== */
+        .rsvp-cols .rsvp-form { order: -1; }
+
+        .rsvp-form {
+            position: relative;
+            background: #ffffff;
+            border: 3px solid #5a8fbd;
+            border-radius: 16px;
+            padding: 0 20px 22px;
+            margin-bottom: 26px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(90, 143, 189, 0.28);
+            animation: rsvpGlow 2s ease-in-out infinite;
+            scroll-margin-top: 16px;
+        }
+        .rsvp-form:focus-within { animation: none; }
+        .rsvp-form:has(#success-msg:not(.hidden)) { animation: none; box-shadow: 0 6px 18px rgba(90, 143, 189, 0.2); }
+
+        @keyframes rsvpGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(90, 143, 189, 0.28), 0 0 0 0 rgba(90, 143, 189, 0.55); }
+            50%      { box-shadow: 0 10px 30px rgba(90, 143, 189, 0.28), 0 0 0 12px rgba(90, 143, 189, 0); }
+        }
+
+        .rsvp-cta-head {
+            margin: 0 -20px 20px;
+            padding: 16px 18px 14px;
+            background: radial-gradient(circle at 20% 25%, rgba(190,220,245,0.45) 0%, rgba(190,220,245,0) 45%), radial-gradient(circle at 85% 80%, rgba(40,85,130,0.35) 0%, rgba(40,85,130,0) 50%), linear-gradient(135deg, #6a9fcb 0%, #3b6d9c 100%);
+            color: #ffffff;
+            text-align: center;
+        }
+        .rsvp-cta-tag {
+            display: inline-block;
+            background: #ffffff;
+            color: #3b6d9c;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+        .rsvp-cta-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            line-height: 1.1;
+            margin: 0 0 6px;
+            color: #ffffff;
+        }
+        .rsvp-cta-sub { font-size: 0.95rem; line-height: 1.4; margin: 0; color: #eaf3fb; }
+        .rsvp-form:has(#success-msg:not(.hidden)) .rsvp-cta-tag,
+        .rsvp-form:has(#success-msg:not(.hidden)) .rsvp-cta-sub { display: none; }
+
+        .rsvp-form label { font-size: 1rem; font-weight: 500; text-transform: none; letter-spacing: 0.3px; }
+        .rsvp-form select {
+            padding: 16px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #5a8fbd;
+            background-color: #ffffff;
+            min-height: 56px;
+        }
+        .rsvp-form #btnEnviar {
+            background: radial-gradient(circle at 20% 25%, rgba(190,220,245,0.45) 0%, rgba(190,220,245,0) 45%), radial-gradient(circle at 85% 80%, rgba(40,85,130,0.35) 0%, rgba(40,85,130,0) 50%), linear-gradient(135deg, #6a9fcb 0%, #3b6d9c 100%);
+            font-size: 1.15rem;
+            font-weight: 500;
+            padding: 18px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(59, 109, 156, 0.4);
+            animation: btnPulse 1.6s ease-in-out infinite;
+        }
+        .rsvp-form #btnEnviar:hover { background: #3b6d9c; }
+        .rsvp-form #btnEnviar:disabled { animation: none; opacity: 0.7; }
+        @keyframes btnPulse {
+            0%, 100% { transform: scale(1); }
+            50%      { transform: scale(1.03); }
+        }
+
+        /* Botón flotante que lleva a la confirmación */
+        .rsvp-fab {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            width: auto;
+            max-width: 92%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 24px;
+            border-radius: 40px;
+            background: radial-gradient(circle at 20% 25%, rgba(190,220,245,0.45) 0%, rgba(190,220,245,0) 45%), radial-gradient(circle at 85% 80%, rgba(40,85,130,0.35) 0%, rgba(40,85,130,0) 50%), linear-gradient(135deg, #6a9fcb 0%, #3b6d9c 100%);
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            border: 3px solid #ffffff;
+            box-shadow: 0 10px 28px rgba(10, 24, 38, 0.4);
+            z-index: 1001;
+            animation: fabBounce 1.6s ease-in-out infinite;
+        }
+        .rsvp-fab:hover { background: #3b6d9c; }
+        .rsvp-fab.hidden { display: none !important; }
+        @keyframes fabBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(-6px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .rsvp-form, .rsvp-form #btnEnviar, .rsvp-fab { animation: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -1549,7 +1664,12 @@
 
             <div class="rsvp-cols">
                 <div class="rsvp-col rsvp-col-form">
-                    <div class="rsvp-form">
+                    <div class="rsvp-form" id="rsvpForm">
+            <div class="rsvp-cta-head">
+                <span class="rsvp-cta-tag">👇 Paso importante</span>
+                <h2 class="rsvp-cta-title">✅ Confirma tu asistencia</h2>
+                <p class="rsvp-cta-sub">Elige una opción y toca el botón azul de abajo.</p>
+            </div>
             <div id="success-msg" class="alert alert-success hidden">
                 ¡Muchas gracias por confirmar tu respuesta! Ha sido registrada con éxito.
             </div>
@@ -2913,5 +3033,38 @@ window['animStop_rec'] = function () {
     })();
     </script>
     <div style="position:fixed; bottom:4px; left:6px; font-size:10px; color:rgba(255,255,255,0.55); z-index:1000; pointer-events:none; font-family: monospace;">v2.4-codigo-reutilizable</div>
+
+<button type="button" id="rsvpFab" class="rsvp-fab hidden" aria-label="Ir a confirmar asistencia">👆 Confirmar mi asistencia</button>
+<script>
+(function () {
+    var fab = document.getElementById("rsvpFab");
+    var step = document.getElementById("step-rsvp");
+    var form = document.getElementById("rsvpForm");
+    var ok = document.getElementById("success-msg");
+    if (!fab || !step || !form) return;
+
+    function update() {
+        var visibleStep = !step.classList.contains("hidden");
+        var done = ok && !ok.classList.contains("hidden");
+        var overlay = document.querySelector(".guia-overlay:not(.hidden), .gallery-fullscreen:not(.hidden)");
+        var r = form.getBoundingClientRect();
+        var inView = r.top < window.innerHeight * 0.75 && r.bottom > window.innerHeight * 0.25;
+        var show = visibleStep && !done && !overlay && !inView;
+        fab.classList.toggle("hidden", !show);
+        if (show) fab.textContent = (r.top < 0) ? "👆 Confirmar mi asistencia" : "👇 Confirmar mi asistencia";
+    }
+    fab.addEventListener("click", function () {
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(function () {
+            var sel = document.getElementById("asistenciaSelect");
+            if (sel && !sel.disabled) sel.focus({ preventScroll: true });
+        }, 600);
+    });
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ["class", "style"], subtree: true });
+    update();
+})();
+</script>
 </body>
 </html>
