@@ -2649,16 +2649,25 @@ window['animStop_rec'] = function () {
 
                             const familia = (row[2] && row[2].v !== null) ? row[2].v.toString() : "Invitado Especial";
                             const estatus = (row[3] && row[3].v !== null) ? row[3].v.toString().trim() : "";
-                            const cuotaRaw = (row[4] && row[4].v !== null) ? row[4].v.toString() : "1|0";
+                            // Lee el texto de una celda (usa el valor y, si viene vacío, el texto formateado)
+                            const valCelda = (c) => {
+                                if (!c) return "";
+                                if (c.v !== null && c.v !== undefined && c.v !== "") return c.v.toString();
+                                return c.f ? c.f.toString() : "";
+                            };
+                            // Columna N = copia en TEXTO de la columna E (fórmula en la hoja). Si no existe, se usa la E.
+                            let cuotaRaw = valCelda(row[13]) || valCelda(row[4]);
+                            if (!cuotaRaw) cuotaRaw = "1|0";
 
                             let adultos = 1;
                             let ninos = 0;
-                            if (cuotaRaw.includes("|")) {
-                                const partes = cuotaRaw.split("|");
-                                adultos = parseInt(partes[0]) || 0;
-                                ninos = parseInt(partes[1]) || 0;
+                            // Acepta cualquier separador entre los dos números ( | ¦ / - , y espacio ): "7|1", "7 / 1", "7¦1"
+                            const nums = cuotaRaw.match(/\d+/g) || [];
+                            if (nums.length >= 2) {
+                                adultos = parseInt(nums[0]) || 0;
+                                ninos = parseInt(nums[1]) || 0;
                             } else {
-                                adultos = parseInt(cuotaRaw) || 1;
+                                adultos = parseInt(nums[0]) || 1;
                             }
 
                             codigoActual = input;
